@@ -229,7 +229,12 @@
 <div class="tip" id="tip"></div>
 
 <script>
-const ENDPOINT = "https://sqfepgxaurtkqftknobl.supabase.co/functions/v1/pickleball-public";
+// The access key travels in this page's own URL, never in the source, so the
+// markup can live in a public repo without exposing the client's figures.
+const ACCESS_KEY = new URLSearchParams(location.search).get("k")
+  || location.hash.replace(/^#k=/, "");
+const ENDPOINT = "https://sqfepgxaurtkqftknobl.supabase.co/functions/v1/pickleball-public"
+  + "?k=" + encodeURIComponent(ACCESS_KEY);
 
 const money = (n, dp) => "$" + (Number(n)||0).toLocaleString("en-AU",
   {minimumFractionDigits: dp===undefined?2:dp, maximumFractionDigits: dp===undefined?2:dp});
@@ -451,18 +456,36 @@ function render(d){
     `<div class="card pad" style="color:var(--muted)">No ads in this account yet.</div>`;
 }
 
-fetch(ENDPOINT,{cache:"no-store"})
-  .then(r=>{if(!r.ok)throw new Error("HTTP "+r.status);return r.json();})
-  .then(render)
-  .catch(err=>{
-    document.getElementById("updated").textContent="Couldn't load live data";
-    document.getElementById("kpis").innerHTML=
-      `<div class="card pad" style="grid-column:1/-1;color:var(--text-secondary)">
-        <strong style="color:var(--critical)">Dashboard temporarily unavailable.</strong><br>
-        We couldn't reach the reporting service just now. Please refresh in a few minutes.
-        <div style="color:var(--muted);font-size:.75rem;margin-top:6px">${esc(err.message)}</div>
-      </div>`;
-  });
+function notice(title, body){
+  document.getElementById("updated").textContent = "Not loaded";
+  document.getElementById("kpis").innerHTML =
+    `<div class="card pad" style="grid-column:1/-1">
+      <strong style="color:var(--critical)">${esc(title)}</strong>
+      <div style="color:var(--text-secondary);margin-top:6px">${esc(body)}</div>
+    </div>`;
+}
+
+if(!ACCESS_KEY){
+  notice("This link is incomplete.",
+    "Please open the full dashboard link you were sent — it ends with a personal access code.");
+}else{
+  fetch(ENDPOINT,{cache:"no-store"})
+    .then(r=>{
+      if(r.status===401) throw new Error("__BADKEY__");
+      if(!r.ok) throw new Error("HTTP "+r.status);
+      return r.json();
+    })
+    .then(render)
+    .catch(err=>{
+      if(err.message==="__BADKEY__"){
+        notice("This dashboard link isn't valid.",
+          "The access code in your link has expired or is incorrect. Please ask Jarrod for an updated link.");
+      }else{
+        notice("Dashboard temporarily unavailable.",
+          "We couldn't reach the reporting service just now — please refresh in a few minutes. ("+err.message+")");
+      }
+    });
+}
 </script>
 </body>
 </html>
