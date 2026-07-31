@@ -158,6 +158,29 @@
   .tip .tdate{color:var(--muted);font-size:.75rem;margin-bottom:2px}
   .tip .tval{font-weight:660;font-variant-numeric:tabular-nums}
 
+  /* big call-to-action into the staff call list */
+  .leadcta{display:block;text-decoration:none;border-radius:18px;padding:24px 26px;
+    background:linear-gradient(120deg,#0e9f6e 0%,#1baf7a 42%,#2a78d6 100%);
+    color:#fff;box-shadow:0 10px 30px -12px rgba(14,159,110,.75);
+    position:relative;overflow:hidden;border:0;transition:transform .12s ease, box-shadow .12s ease}
+  .leadcta:hover{transform:translateY(-2px);box-shadow:0 16px 38px -12px rgba(14,159,110,.85)}
+  .leadcta:active{transform:translateY(0)}
+  .leadcta::after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;
+    border-radius:50%;background:rgba(255,255,255,.10)}
+  .ctarow{display:flex;align-items:center;gap:18px;position:relative;z-index:1}
+  .ctaicon{width:54px;height:54px;border-radius:14px;background:rgba(255,255,255,.18);
+    display:flex;align-items:center;justify-content:center;font-size:26px;flex:none}
+  .ctatext{flex:1;min-width:0}
+  .ctatitle{font-size:1.25rem;font-weight:720;letter-spacing:-.02em;line-height:1.2}
+  .ctasub{font-size:.875rem;color:rgba(255,255,255,.88);margin-top:4px}
+  .ctaarrow{font-size:1.75rem;font-weight:700;flex:none;opacity:.9}
+  @media (max-width:520px){
+    .leadcta{padding:20px}
+    .ctatitle{font-size:1.0625rem}
+    .ctaicon{width:44px;height:44px;font-size:22px}
+    .ctaarrow{display:none}
+  }
+
   /* what-happens-next journey */
   .flow{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
   .step{padding:20px 22px;border-right:1px solid var(--grid)}
@@ -220,6 +243,19 @@
   </section>
 
   <section>
+    <a class="leadcta" id="leadcta" href="#">
+      <div class="ctarow">
+        <div class="ctaicon">📞</div>
+        <div class="ctatext">
+          <div class="ctatitle">CLICK HERE TO SEE AND CONTACT LEADS</div>
+          <div class="ctasub" id="ctasub">Every enquiry, with tap-to-call and tap-to-text</div>
+        </div>
+        <div class="ctaarrow">&rsaquo;</div>
+      </div>
+    </a>
+  </section>
+
+  <section>
     <h2>Your ads</h2>
     <p class="h2sub">Exactly what people are seeing on Facebook and Instagram right now.</p>
     <div class="ads" id="ads"></div>
@@ -275,11 +311,33 @@ const ACCESS_KEY = new URLSearchParams(location.search).get("k")
 const ENDPOINT = "https://sqfepgxaurtkqftknobl.supabase.co/functions/v1/pickleball-public"
   + "?k=" + encodeURIComponent(ACCESS_KEY);
 
-/* The call list holds personal contact details, so it sits behind its OWN key,
-   passed as &s= only on the staff version of this link. Share the dashboard
-   without it and no lead data is reachable from here. */
-const STAFF_KEY = new URLSearchParams(location.search).get("s") || "";
-const LEADS_URL = STAFF_KEY ? "leads/?k=" + encodeURIComponent(STAFF_KEY) : "";
+/* The call list holds personal contact details and sits behind its own key,
+   separate from this dashboard's. It is embedded so the venue's team can reach
+   their leads in one tap; ?s= overrides it if the key is ever rotated.
+   Consequence: anyone with THIS link can also open the call list, so it should
+   stay within the venue's team. */
+const LEADS_KEY = new URLSearchParams(location.search).get("s")
+  || "55db959719d60621489c6d35";
+const LEADS_API = "https://sqfepgxaurtkqftknobl.supabase.co/functions/v1/pickleball-leads-view";
+const LEADS_URL = "leads/?k=" + encodeURIComponent(LEADS_KEY);
+
+/* Live counts in the call-to-action, so staff can see what's waiting. */
+function loadLeadCount(){
+  const cta = document.getElementById("leadcta");
+  if (cta) cta.href = LEADS_URL;
+  fetch(LEADS_API + "?k=" + encodeURIComponent(LEADS_KEY), {cache:"no-store"})
+    .then(r => r.ok ? r.json() : null)
+    .then(d => {
+      if(!d || !d.totals) return;
+      const t = d.totals;
+      const bits = [`${int(t.uncontacted)} still to call`];
+      if (t.contacted) bits.push(`${int(t.contacted)} done`);
+      if (t.expiring_soon) bits.push(`${int(t.expiring_soon)} expiring soon`);
+      document.getElementById("ctasub").textContent =
+        bits.join(" · ") + " — tap to call or text";
+    })
+    .catch(()=>{ /* keep the default subtitle */ });
+}
 
 const money = (n, dp) => "$" + (Number(n)||0).toLocaleString("en-AU",
   {minimumFractionDigits: dp===undefined?2:dp, maximumFractionDigits: dp===undefined?2:dp});
@@ -508,11 +566,8 @@ function render(d){
     <div class="step">
       <div class="stepn">3</div>
       <h3>Your team calls them</h3>
-      <p>${LEADS_URL
-        ? `Every lead lands in your <a href="${LEADS_URL}"><strong>call list</strong></a>
-           with their number ready to tap, so nobody gets missed.`
-        : `Every lead lands in your team's call list with their number ready to tap,
-           so nobody gets missed.`}
+      <p>Every lead lands in your <a href="${LEADS_URL}"><strong>call list</strong></a>
+         with their number ready to tap, so nobody gets missed.
          Your team also gets an email the moment one comes in.</p>
     </div>`;
 
@@ -590,6 +645,8 @@ if(!ACCESS_KEY){
   notice("This link is incomplete.",
     "Please open the full dashboard link you were sent — it ends with a personal access code.");
 }else{
+  loadLeadCount();
+  setInterval(loadLeadCount, 300_000);
   load().then(startPolling).catch(err=>{
     if(err.message==="__BADKEY__"){
       notice("This dashboard link isn't valid.",
