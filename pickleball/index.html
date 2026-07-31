@@ -269,7 +269,7 @@
 
   <section>
     <h2>How it's tracking</h2>
-    <p class="h2sub">Daily results for the last 30 days.</p>
+    <p class="h2sub">How each day is going.</p>
     <div class="grid2">
       <div class="card chartcard" id="leadschart"></div>
       <div class="card chartcard" id="spendchart"></div>
@@ -287,7 +287,7 @@
 
   <footer>
     Reporting straight from the Meta Ads API &middot; figures in AUD<br>
-    Managed by <strong id="agency"></strong> &middot; <span id="acctline"></span>
+    Managed by <strong id="agency"></strong>
   </footer>
 </div>
 
@@ -386,12 +386,21 @@ function lineChart(el, rows, key, opts){
 
   el.innerHTML = `<div class="chart-head">
       <span class="chart-title">${esc(opts.title)}</span>
-      <span class="chart-total">${pts.length ? "last 30 days" : ""}</span>
+      <span class="chart-total">${pts.length > 1 ? "last 30 days" : ""}</span>
     </div>`;
 
   if(!pts.length){
     el.insertAdjacentHTML("beforeend",
       `<div class="empty"><strong>${esc(opts.emptyTitle)}</strong><span>${esc(opts.emptyBody)}</span></div>`);
+    return;
+  }
+  if(pts.length < 2){
+    const only = pts[0];
+    const when = new Date(only.x+"T00:00:00")
+      .toLocaleDateString("en-AU",{day:"numeric",month:"long"});
+    el.insertAdjacentHTML("beforeend",
+      `<div class="empty"><strong style="font-size:1.5rem;color:${opts.color}">${opts.fmtTip(only.y)}</strong>
+       <span>on ${esc(when)} — the daily trend appears once there's more than one day.</span></div>`);
     return;
   }
 
@@ -493,8 +502,6 @@ function render(d){
   document.getElementById("livetxt").textContent =
     liveAds>0 ? `${liveAds} ad${liveAds>1?"s":""} running` : "Paused";
   document.getElementById("agency").textContent = AGENCY;
-  document.getElementById("acctline").textContent =
-    `${acct.name||""} · ${acct.currency||"AUD"}`;
 
   /* headline + countdown */
   const days = Math.ceil((new Date(EVENT_DATE+"T00:00:00") - new Date())/86400000);
