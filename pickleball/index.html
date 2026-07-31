@@ -158,6 +158,22 @@
   .tip .tdate{color:var(--muted);font-size:.75rem;margin-bottom:2px}
   .tip .tval{font-weight:660;font-variant-numeric:tabular-nums}
 
+  /* what-happens-next journey */
+  .flow{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+  .step{padding:20px 22px;border-right:1px solid var(--grid)}
+  .step:last-child{border-right:0}
+  .stepn{width:26px;height:26px;border-radius:50%;background:var(--brand-2);color:#fff;
+         display:flex;align-items:center;justify-content:center;font-size:.8125rem;
+         font-weight:680;margin-bottom:10px}
+  .step h3{font-size:.9375rem;font-weight:640;margin:0 0 5px;letter-spacing:-.01em}
+  .step p{font-size:.8125rem;color:var(--text-secondary);margin:0;line-height:1.55}
+  .step a{color:var(--series-1);word-break:break-word}
+  @media (max-width:860px){
+    .flow{grid-template-columns:1fr}
+    .step{border-right:0;border-bottom:1px solid var(--grid)}
+    .step:last-child{border-bottom:0}
+  }
+
   footer{margin-top:34px;text-align:center;color:var(--muted);font-size:.75rem;line-height:1.7}
 
   @media (max-width:860px){
@@ -210,6 +226,12 @@
   </section>
 
   <section>
+    <h2>What happens when someone taps your ad</h2>
+    <p class="h2sub">The path from seeing the ad to registering for the tournament.</p>
+    <div class="card flow" id="flowcard"></div>
+  </section>
+
+  <section>
     <h2>How it's tracking</h2>
     <p class="h2sub">Daily results for the last 30 days.</p>
     <div class="grid2">
@@ -241,6 +263,10 @@ const AGENCY = "Be Branded";
 /* First day of the tournament, used for the countdown. */
 const EVENT_DATE = "2026-09-25";
 const EVENT_NAME = "Spring Tournament";
+/* Where the enquiry form sends people once they've filled it in. Must match the
+   lead form's thank-you button and follow-up URL. */
+const DEST_URL = "https://pickleballpalace.com.au/seasonal-tournaments/";
+const DEST_LABEL = "pickleballpalace.com.au/seasonal-tournaments";
 
 // The access key travels in this page's own URL, never in the source, so the
 // markup can live in a public repo without exposing the client's figures.
@@ -458,6 +484,28 @@ function render(d){
     </div>`;}).join("") ||
     `<div class="card pad" style="color:var(--muted)">No ads running yet.</div>`;
 
+  /* what actually happens after someone taps the ad */
+  document.getElementById("flowcard").innerHTML = `
+    <div class="step">
+      <div class="stepn">1</div>
+      <h3>They fill in a short form</h3>
+      <p>It opens straight inside Facebook or Instagram, so nobody has to leave the app.
+         We ask their name, phone and email, their standard, and which of the three days suit them.</p>
+    </div>
+    <div class="step">
+      <div class="stepn">2</div>
+      <h3>They're sent to your tournament page</h3>
+      <p>The confirmation screen tells them they're on the list but <em>not registered yet</em>,
+         with a REGISTER NOW button through to
+         <a href="${DEST_URL}" target="_blank" rel="noopener">${esc(DEST_LABEL)}</a>.</p>
+    </div>
+    <div class="step">
+      <div class="stepn">3</div>
+      <h3>You get their details</h3>
+      <p>Every enquiry is captured with their contact details and answers, so anyone who
+         doesn't finish registering can still be followed up.</p>
+    </div>`;
+
   /* charts — two separate single-series plots, never a dual axis */
   const daily=d.daily||[];
   lineChart(document.getElementById("leadschart"), daily, "leads", {
@@ -481,8 +529,7 @@ function render(d){
     <div class="row"><span class="k">Goal</span><span class="v">Get enquiries</span></div>
     <div class="row"><span class="k">Daily budget</span><span class="v">${money(b.daily_total,0)}</span></div>
     <div class="row"><span class="k">Ads running</span><span class="v">${liveAds} of ${ads.length}</span></div>
-    <div class="row"><span class="k">Enquiry form</span><span class="v">${lf.status==="ACTIVE"?"Working":esc(lf.status||"—")}</span></div>
-    <div class="row"><span class="k">Where enquiries go</span><span class="v">Straight to your team</span></div>`;
+    <div class="row"><span class="k">Enquiry form</span><span class="v">${lf.status==="ACTIVE"?"Working":esc(lf.status||"—")}</span></div>`;
 
   document.getElementById("targetcard").innerHTML = `
     <div style="font-weight:660;font-size:1rem;letter-spacing:-.01em">Who's seeing them</div>
