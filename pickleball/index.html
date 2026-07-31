@@ -401,9 +401,9 @@ function headline(t, liveAds){
   if(t.impressions === 0)
     return "Your ads are approved and about to start showing. First results usually appear within a few hours.";
   if(t.leads === 0)
-    return `Your ads are live and have been seen <span class="hl">${int(t.impressions)} times</span>. No enquiries have come through yet, which is normal in the first day or two.`;
+    return `Your ads are live and have been seen <span class="hl">${int(t.impressions)} times</span>. No leads have come through yet, which is normal in the first day or two.`;
   const each = t.cost_per_lead ? ` at <span class="hl">${money(t.cost_per_lead)}</span> each` : "";
-  return `You've had <span class="hl">${int(t.leads)} ${t.leads===1?"enquiry":"enquiries"}</span>${each} from ${int(t.impressions)} times your ads have been seen.`;
+  return `You've had <span class="hl">${int(t.leads)} ${t.leads===1?"lead":"leads"}</span>${each} from ${int(t.impressions)} times your ads have been seen.`;
 }
 
 let lastStamp = null;
@@ -442,10 +442,10 @@ function render(d){
   /* KPIs */
   const cpl=t.cost_per_lead;
   document.getElementById("kpis").innerHTML =
-    kpiTile("Enquiries", int(t.leads),
+    kpiTile("Leads", int(t.leads),
       t.leads>0 ? "Name, phone, email and preferred day" : "None yet", "var(--brand-2)") +
-    kpiTile("Cost per enquiry", cpl?money(cpl):"—",
-      cpl?"What each enquiry costs you":"Shows once enquiries arrive", "var(--series-1)") +
+    kpiTile("Cost per lead", cpl?money(cpl):"—",
+      cpl?"What each lead costs you":"Shows once leads arrive", "var(--series-1)") +
     kpiTile("Spent so far", money(t.spend), "Since the ads went live", "var(--series-2)") +
     kpiTile("Daily budget", money(b.daily_total,0),
       `About ${money(b.monthly_pace,0)} a month`, "var(--brand-1)");
@@ -476,7 +476,7 @@ function render(d){
         </div>
       </div>
       <div class="adstats">
-        <div class="adstat"><div class="n">${int(s.leads)}</div><div class="l">Enquiries</div></div>
+        <div class="adstat"><div class="n">${int(s.leads)}</div><div class="l">Leads</div></div>
         <div class="adstat"><div class="n">${int(s.impressions)}</div><div class="l">Times seen</div></div>
         <div class="adstat"><div class="n">${int(s.clicks)}</div><div class="l">Clicks</div></div>
         <div class="adstat"><div class="n">${money(s.spend)}</div><div class="l">Spent</div></div>
@@ -502,15 +502,15 @@ function render(d){
     <div class="step">
       <div class="stepn">3</div>
       <h3>You get their details</h3>
-      <p>Every enquiry is captured with their contact details and answers, so anyone who
+      <p>Every lead is captured with their contact details and answers, so anyone who
          doesn't finish registering can still be followed up.</p>
     </div>`;
 
   /* charts — two separate single-series plots, never a dual axis */
   const daily=d.daily||[];
   lineChart(document.getElementById("leadschart"), daily, "leads", {
-    title:"Enquiries per day", color:"var(--series-1)",
-    fmtTick:v=>Math.round(v), fmtTip:v=>`${int(Math.round(v))} enquir${Math.round(v)===1?"y":"ies"}`,
+    title:"Leads per day", color:"var(--series-1)",
+    fmtTick:v=>Math.round(v), fmtTip:v=>`${int(Math.round(v))} lead${Math.round(v)===1?"":"s"}`,
     fmtTotal:v=>`${int(v)} total`, padLeft:32, minMax:4,
     emptyTitle:"Nothing to chart yet",
     emptyBody:"Daily results appear here from tomorrow."});
@@ -526,10 +526,10 @@ function render(d){
   document.getElementById("campaigncard").innerHTML = `
     <div style="font-weight:660;font-size:1rem;letter-spacing:-.01em">Your campaign</div>
     <div style="margin-top:3px;margin-bottom:10px">${statusPill(c.status)}</div>
-    <div class="row"><span class="k">Goal</span><span class="v">Get enquiries</span></div>
+    <div class="row"><span class="k">Goal</span><span class="v">Get leads</span></div>
     <div class="row"><span class="k">Daily budget</span><span class="v">${money(b.daily_total,0)}</span></div>
     <div class="row"><span class="k">Ads running</span><span class="v">${liveAds} of ${ads.length}</span></div>
-    <div class="row"><span class="k">Enquiry form</span><span class="v">${lf.status==="ACTIVE"?"Working":esc(lf.status||"—")}</span></div>`;
+    <div class="row"><span class="k">Lead form</span><span class="v">${lf.status==="ACTIVE"?"Working":esc(lf.status||"—")}</span></div>`;
 
   document.getElementById("targetcard").innerHTML = `
     <div style="font-weight:660;font-size:1rem;letter-spacing:-.01em">Who's seeing them</div>
