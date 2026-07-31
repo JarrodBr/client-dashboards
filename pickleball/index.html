@@ -275,6 +275,12 @@ const ACCESS_KEY = new URLSearchParams(location.search).get("k")
 const ENDPOINT = "https://sqfepgxaurtkqftknobl.supabase.co/functions/v1/pickleball-public"
   + "?k=" + encodeURIComponent(ACCESS_KEY);
 
+/* The call list holds personal contact details, so it sits behind its OWN key,
+   passed as &s= only on the staff version of this link. Share the dashboard
+   without it and no lead data is reachable from here. */
+const STAFF_KEY = new URLSearchParams(location.search).get("s") || "";
+const LEADS_URL = STAFF_KEY ? "leads/?k=" + encodeURIComponent(STAFF_KEY) : "";
+
 const money = (n, dp) => "$" + (Number(n)||0).toLocaleString("en-AU",
   {minimumFractionDigits: dp===undefined?2:dp, maximumFractionDigits: dp===undefined?2:dp});
 const int = n => (Number(n)||0).toLocaleString("en-AU");
@@ -501,9 +507,13 @@ function render(d){
     </div>
     <div class="step">
       <div class="stepn">3</div>
-      <h3>You get their details</h3>
-      <p>Every lead is captured with their contact details and answers, so anyone who
-         doesn't finish registering can still be followed up.</p>
+      <h3>Your team calls them</h3>
+      <p>${LEADS_URL
+        ? `Every lead lands in your <a href="${LEADS_URL}"><strong>call list</strong></a>
+           with their number ready to tap, so nobody gets missed.`
+        : `Every lead lands in your team's call list with their number ready to tap,
+           so nobody gets missed.`}
+         Your team also gets an email the moment one comes in.</p>
     </div>`;
 
   /* charts — two separate single-series plots, never a dual axis */
