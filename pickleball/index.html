@@ -446,7 +446,7 @@ function render(d){
             ${showBest && a.id===bestId.id?`<span class="badge best">★ Best performer</span>`:""}
           </div>
           <div class="adhead">${esc(a.headline||"")}</div>
-          <div class="adbody">${esc(a.body||"")}</div>
+          <div class="adbody">${esc(String(a.body||"").replace(/\n\s*\n/g,"\n").trim())}</div>
         </div>
       </div>
       <div class="adstats">
