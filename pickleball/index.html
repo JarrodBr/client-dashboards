@@ -222,13 +222,17 @@
 
   <footer>
     Reporting straight from the Meta Ads API &middot; figures in AUD<br>
-    Managed by <strong>Jarrod Brake</strong> &middot; <span id="acctline"></span>
+    Managed by <strong id="agency"></strong> &middot; <span id="acctline"></span>
   </footer>
 </div>
 
 <div class="tip" id="tip"></div>
 
 <script>
+/* Agency byline in the footer. Change this one string to white-label the
+   dashboard (e.g. "Be Branded") — nothing else in the page names an agency. */
+const AGENCY = "Jarrod Brake";
+
 // The access key travels in this page's own URL, never in the source, so the
 // markup can live in a public repo without exposing the client's figures.
 const ACCESS_KEY = new URLSearchParams(location.search).get("k")
@@ -368,6 +372,7 @@ function render(d){
   lastStamp = d.updated_at || d.generated_at;
   paintStamp();
 
+  document.getElementById("agency").textContent = AGENCY;
   document.getElementById("acctline").textContent =
     `${acct.name||""} · ${acct.currency||"AUD"} · ${acct.timezone||""}`;
 
