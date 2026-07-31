@@ -40,6 +40,13 @@
 
   .tools{position:sticky;top:0;z-index:20;background:var(--plane);
          padding:12px 0 10px;border-bottom:1px solid var(--line)}
+  .seg{display:flex;gap:6px;margin-bottom:8px}
+  .segb{flex:1;text-align:center;padding:10px 6px;border-radius:10px;font-size:.8125rem;
+        font-weight:660;border:1px solid var(--ring);background:var(--surface);
+        color:var(--ink2);cursor:pointer;-webkit-tap-highlight-color:transparent;line-height:1.25}
+  .segb small{display:block;font-weight:550;font-size:.6875rem;opacity:.75;margin-top:1px}
+  .segb[aria-selected="true"]{background:var(--green);border-color:var(--green);color:#fff}
+  .segb[aria-selected="true"] small{opacity:.9}
   .tabs{display:flex;gap:6px;margin-bottom:10px}
   .tab{flex:1;text-align:center;padding:9px 6px;border-radius:9px;font-size:.8125rem;
        font-weight:620;border:1px solid var(--ring);background:var(--surface);
@@ -54,7 +61,6 @@
   .ltop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
   .lname{font-weight:660;font-size:1.0625rem;letter-spacing:-.01em;word-break:break-word}
   .lwhen{font-size:.75rem;color:var(--muted);white-space:nowrap;flex:none;padding-top:3px}
-  .lwhen.warn{color:var(--amber);font-weight:620}
   .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
   .chip{background:var(--plane);border:1px solid var(--ring);border-radius:999px;
         padding:4px 10px;font-size:.75rem;color:var(--ink2);font-weight:550}
@@ -91,6 +97,10 @@
 
 <div class="wrap">
   <div class="tools">
+    <div class="seg" role="tablist">
+      <div class="segb" role="tab" data-c="current" aria-selected="true">Spring Tournament<small id="segc"></small></div>
+      <div class="segb" role="tab" data-c="earlier" aria-selected="false">Earlier enquiries<small id="sege"></small></div>
+    </div>
     <div class="tabs" role="tablist">
       <div class="tab" role="tab" data-f="todo" aria-selected="true">To call</div>
       <div class="tab" role="tab" data-f="done" aria-selected="false">Called</div>
@@ -138,11 +148,14 @@ function ago(iso){
   return new Date(iso).toLocaleDateString("en-AU",{day:"numeric",month:"short"});
 }
 
-let DATA = [], filter = "todo";
+let DATA = [], filter = "todo", campaign = "current", CURRENT_FORM = "";
+
+const inCampaign = l =>
+  campaign === "current" ? l.form_id === CURRENT_FORM : l.form_id !== CURRENT_FORM;
 
 function draw(){
   const q = (document.getElementById("q").value||"").toLowerCase().trim();
-  let rows = DATA.filter(l =>
+  let rows = DATA.filter(inCampaign).filter(l =>
     filter==="all" ? true : filter==="done" ? !!l.contacted_at : !l.contacted_at);
   if (q) rows = rows.filter(l =>
     ((l.full_name||"")+" "+(l.phone_raw||"")+" "+(l.phone_e164||"")+" "+(l.email||"")).toLowerCase().includes(q));
@@ -150,18 +163,20 @@ function draw(){
   const list = document.getElementById("list");
   if (!rows.length){
     list.innerHTML = `<div class="empty">${filter==="todo"
-      ? "Nothing left to call. Nice work." : "Nothing here."}</div>`;
+      ? (campaign==="current"
+          ? "No new leads to call yet. They'll appear here as they come in."
+          : "Nothing left to call. Nice work.")
+      : "Nothing here."}</div>`;
     return;
   }
   list.innerHTML = rows.map(l => {
-    const days = (Date.now()-new Date(l.submitted_at).getTime())/86400000;
     const first = (l.full_name||"there").split(" ")[0];
     const msg = `Hi ${first}, it's Pickleball Palace on the Sunshine Coast returning your enquiry. When suits for a hit?`;
     const done = !!l.contacted_at;
     return `<div class="lead ${done?"done":""}">
       <div class="ltop">
         <div class="lname">${esc(l.full_name||"(no name given)")}</div>
-        <div class="lwhen ${days>=80?"warn":""}">${ago(l.submitted_at)}</div>
+        <div class="lwhen">${ago(l.submitted_at)}</div>
       </div>
       <div class="chips">
         ${l.preferred_event?`<span class="chip">${esc(lab(l.preferred_event))}</span>`:""}
@@ -199,14 +214,27 @@ async function mark(btn){
 }
 
 function recount(){
-  const total=DATA.length, done=DATA.filter(l=>l.contacted_at).length;
-  const exp=DATA.filter(l=>(Date.now()-new Date(l.submitted_at).getTime())/86400000>=80).length;
+  const cur = DATA.filter(l => l.form_id === CURRENT_FORM);
+  const ear = DATA.filter(l => l.form_id !== CURRENT_FORM);
+  document.getElementById("segc").textContent =
+    `${cur.filter(l=>!l.contacted_at).length} to call`;
+  document.getElementById("sege").textContent =
+    `${ear.filter(l=>!l.contacted_at).length} to call`;
+
+  const set = campaign === "current" ? cur : ear;
+  const done = set.filter(l=>l.contacted_at).length;
+  const week = set.filter(l =>
+    (Date.now()-new Date(l.submitted_at).getTime())/86400000 <= 7).length;
   document.getElementById("stats").innerHTML =
-    `<div class="stat"><div class="n">${total-done}</div><div class="l">to call</div></div>
+    `<div class="stat"><div class="n">${set.length-done}</div><div class="l">to call</div></div>
      <div class="stat"><div class="n">${done}</div><div class="l">called</div></div>
-     <div class="stat"><div class="n">${exp}</div><div class="l">expiring</div></div>`;
+     <div class="stat"><div class="n">${week}</div><div class="l">this week</div></div>`;
 }
 
+document.querySelectorAll(".segb").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll(".segb").forEach(x=>x.setAttribute("aria-selected","false"));
+  b.setAttribute("aria-selected","true"); campaign = b.dataset.c; recount(); draw();
+}));
 document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => {
   document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-selected","false"));
   t.setAttribute("aria-selected","true"); filter = t.dataset.f; draw();
@@ -220,10 +248,11 @@ if(!KEY){
   fetch(API+"?k="+encodeURIComponent(KEY)+"&scope=all",{cache:"no-store"})
     .then(r=>{ if(r.status===401) throw new Error("__KEY__"); if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); })
     .then(d=>{
-      DATA = d.leads||[]; recount(); draw();
+      DATA = d.leads||[]; CURRENT_FORM = d.current_form || ""; recount(); draw();
       document.getElementById("note").innerHTML =
-        `Showing the ${DATA.length} most recent of ${d.totals.total} leads. Updated every 15 minutes.<br>
-         &ldquo;Expiring&rdquo; means Facebook deletes it soon — those are worth calling first.`;
+        `<strong>Spring Tournament</strong> is the campaign running now.
+         <strong>Earlier enquiries</strong> are people who contacted you before it started.<br>
+         New leads appear here within 15 minutes.`;
     })
     .catch(e=>{
       document.getElementById("list").innerHTML = e.message==="__KEY__"

@@ -227,7 +227,7 @@
     <div class="hero-meta">
       <span class="livepill"><span class="dot"></span><span id="livetxt">Live</span></span>
       <div style="margin-top:8px" id="updated">Loading&hellip;</div>
-      <div style="opacity:.75">Updates automatically every 30 minutes</div>
+      <div style="opacity:.75">Updates itself through the day</div>
     </div>
   </div>
 </div>
@@ -328,13 +328,13 @@ function loadLeadCount(){
   fetch(LEADS_API + "?k=" + encodeURIComponent(LEADS_KEY), {cache:"no-store"})
     .then(r => r.ok ? r.json() : null)
     .then(d => {
-      if(!d || !d.totals) return;
-      const t = d.totals;
-      const bits = [`${int(t.uncontacted)} still to call`];
-      if (t.contacted) bits.push(`${int(t.contacted)} done`);
-      if (t.expiring_soon) bits.push(`${int(t.expiring_soon)} expiring soon`);
-      document.getElementById("ctasub").textContent =
-        bits.join(" · ") + " — tap to call or text";
+      if(!d || !d.totals || !d.totals.current) return;
+      const c = d.totals.current;
+      document.getElementById("ctasub").textContent = c.uncontacted > 0
+        ? `${int(c.uncontacted)} to call from this campaign — tap to call or text`
+        : (c.total > 0
+            ? `All ${int(c.total)} called. Tap to review or text them.`
+            : "Tap to call or text every enquiry");
     })
     .catch(()=>{ /* keep the default subtitle */ });
 }
@@ -386,7 +386,7 @@ function lineChart(el, rows, key, opts){
 
   el.innerHTML = `<div class="chart-head">
       <span class="chart-title">${esc(opts.title)}</span>
-      <span class="chart-total">${opts.fmtTotal(total)}</span>
+      <span class="chart-total">${pts.length ? "last 30 days" : ""}</span>
     </div>`;
 
   if(!pts.length){
@@ -631,7 +631,11 @@ function startPolling(){
       .then(m=>{ if(m && m.updated_at && m.updated_at !== lastStamp) load(); })
       .catch(()=>{});
   }, 300_000);
-  document.addEventListener("visibilitychange",()=>{ if(!document.hidden) paintStamp(); });
+  document.addEventListener("visibilitychange",()=>{
+    if(document.hidden) return;
+    paintStamp();
+    loadLeadCount();   // staff may have just ticked someone off in the call list
+  });
 }
 
 function notice(title, body){
