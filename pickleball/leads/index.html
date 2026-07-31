@@ -245,20 +245,36 @@ if(!KEY){
   document.getElementById("list").innerHTML =
     `<div class="empty"><strong>This link is incomplete.</strong><br>Open the full staff link you were sent.</div>`;
 }else{
-  fetch(API+"?k="+encodeURIComponent(KEY)+"&scope=all",{cache:"no-store"})
-    .then(r=>{ if(r.status===401) throw new Error("__KEY__"); if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); })
-    .then(d=>{
-      DATA = d.leads||[]; CURRENT_FORM = d.current_form || ""; recount(); draw();
-      document.getElementById("note").innerHTML =
-        `<strong>Spring Tournament</strong> is the campaign running now.
-         <strong>Earlier enquiries</strong> are people who contacted you before it started.<br>
-         New leads appear here within 15 minutes.`;
-    })
-    .catch(e=>{
-      document.getElementById("list").innerHTML = e.message==="__KEY__"
-        ? `<div class="empty"><strong>This staff link isn't valid.</strong><br>Ask Jarrod for an updated one.</div>`
-        : `<div class="empty"><strong>Couldn't load leads.</strong><br>Please pull down to refresh in a moment.</div>`;
-    });
+  function refresh(initial){
+    return fetch(API+"?k="+encodeURIComponent(KEY),{cache:"no-store"})
+      .then(r=>{ if(r.status===401) throw new Error("__KEY__"); if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); })
+      .then(d=>{
+        const incoming = d.leads||[];
+        CURRENT_FORM = d.current_form || CURRENT_FORM;
+        /* Only redraw when something actually changed, so a staff member
+           scrolling through the list doesn't get yanked back to the top. */
+        const sig = a => a.map(l=>l.lead_id+(l.contacted_at?"1":"0")).join(",");
+        const changed = initial || sig(incoming) !== sig(DATA);
+        DATA = incoming;
+        if (changed){ recount(); draw(); }
+        if (initial){
+          document.getElementById("note").innerHTML =
+            `<strong>Spring Tournament</strong> is the campaign running now.
+             <strong>Earlier enquiries</strong> are people who enquired before it started.<br>
+             This list checks for new leads on its own — leave it open.`;
+        }
+      })
+      .catch(e=>{
+        if(!initial) return;   // a failed background refresh keeps the current list
+        document.getElementById("list").innerHTML = e.message==="__KEY__"
+          ? `<div class="empty"><strong>This staff link isn't valid.</strong><br>Ask Jarrod for an updated one.</div>`
+          : `<div class="empty"><strong>Couldn't load leads.</strong><br>Please refresh in a moment.</div>`;
+      });
+  }
+
+  refresh(true);
+  setInterval(()=>{ if(!document.hidden) refresh(false); }, 120000);
+  document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) refresh(false); });
 }
 </script>
 </body>
