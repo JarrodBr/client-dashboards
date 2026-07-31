@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Pickleball Palace — Leads to call</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface:#ffffff; --plane:#f4f6f8; --ring:rgba(11,11,11,.10);
+    --ink:#0b0f14; --ink2:#52606d; --muted:#7b8794; --line:#e6eaee;
+    --brand:#0f2b46; --green:#0e9f6e; --blue:#2a78d6; --amber:#b45309;
+    --shadow:0 1px 2px rgba(16,24,40,.05), 0 6px 18px -10px rgba(16,24,40,.20);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --surface:#12171f; --plane:#0b0e13; --ring:rgba(255,255,255,.12);
+      --ink:#fff; --ink2:#c3c9d2; --muted:#8b95a1; --line:#222932;
+      --green:#25c08a; --blue:#3987e5; --amber:#f0b429;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 18px -10px rgba(0,0,0,.6);}
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--plane);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.45;
+    -webkit-font-smoothing:antialiased;padding-bottom:40px}
+  .wrap{max-width:680px;margin:0 auto;padding:0 14px}
+
+  header{background:var(--brand);color:#fff;padding:18px 0 16px;
+         padding-top:calc(18px + env(safe-area-inset-top))}
+  .hwrap{max-width:680px;margin:0 auto;padding:0 14px}
+  h1{font-size:1.125rem;margin:0;font-weight:650;letter-spacing:-.01em}
+  .hsub{font-size:.8125rem;color:rgba(255,255,255,.72);margin-top:2px}
+  .stats{display:flex;gap:8px;margin-top:14px}
+  .stat{flex:1;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);
+        border-radius:10px;padding:8px 10px}
+  .stat .n{font-size:1.25rem;font-weight:700;line-height:1.1}
+  .stat .l{font-size:.6875rem;color:rgba(255,255,255,.75);margin-top:1px}
+
+  .tools{position:sticky;top:0;z-index:20;background:var(--plane);
+         padding:12px 0 10px;border-bottom:1px solid var(--line)}
+  .tabs{display:flex;gap:6px;margin-bottom:10px}
+  .tab{flex:1;text-align:center;padding:9px 6px;border-radius:9px;font-size:.8125rem;
+       font-weight:620;border:1px solid var(--ring);background:var(--surface);
+       color:var(--ink2);cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .tab[aria-selected="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
+  input[type=search]{width:100%;padding:11px 13px;border-radius:10px;border:1px solid var(--ring);
+    background:var(--surface);color:var(--ink);font-size:16px;font-family:inherit}
+
+  .lead{background:var(--surface);border:1px solid var(--ring);border-radius:14px;
+        box-shadow:var(--shadow);padding:14px;margin-top:10px}
+  .lead.done{opacity:.55}
+  .ltop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+  .lname{font-weight:660;font-size:1.0625rem;letter-spacing:-.01em;word-break:break-word}
+  .lwhen{font-size:.75rem;color:var(--muted);white-space:nowrap;flex:none;padding-top:3px}
+  .lwhen.warn{color:var(--amber);font-weight:620}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+  .chip{background:var(--plane);border:1px solid var(--ring);border-radius:999px;
+        padding:4px 10px;font-size:.75rem;color:var(--ink2);font-weight:550}
+  .chip.hot{background:rgba(14,159,110,.12);border-color:rgba(14,159,110,.35);
+            color:var(--green);font-weight:650}
+  .contact{font-size:.8125rem;color:var(--muted);margin-top:9px;word-break:break-all}
+  .btns{display:flex;gap:8px;margin-top:12px}
+  .btn{flex:1;text-align:center;padding:14px 8px;border-radius:11px;text-decoration:none;
+       font-weight:700;font-size:.9375rem;border:0;cursor:pointer;font-family:inherit;
+       -webkit-tap-highlight-color:transparent}
+  .call{background:var(--green);color:#fff}
+  .text{background:var(--blue);color:#fff}
+  .mail{background:var(--plane);color:var(--ink2);border:1px solid var(--ring);flex:0 0 58px}
+  .tick{margin-top:9px;width:100%;padding:11px;border-radius:10px;border:1px solid var(--ring);
+        background:var(--plane);color:var(--ink2);font-weight:620;font-size:.8125rem;
+        cursor:pointer;font-family:inherit}
+  .tick.on{background:rgba(14,159,110,.12);border-color:rgba(14,159,110,.4);color:var(--green)}
+  .empty{text-align:center;color:var(--muted);padding:40px 20px;font-size:.875rem}
+  .note{font-size:.75rem;color:var(--muted);text-align:center;margin-top:18px;line-height:1.6}
+  .note a{color:var(--blue)}
+  .skel{height:120px;background:var(--surface);border:1px solid var(--ring);
+        border-radius:14px;margin-top:10px;opacity:.5}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hwrap">
+    <h1>Leads to call</h1>
+    <div class="hsub">Pickleball Palace &middot; tap a name to ring them</div>
+    <div class="stats" id="stats"></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="tools">
+    <div class="tabs" role="tablist">
+      <div class="tab" role="tab" data-f="todo" aria-selected="true">To call</div>
+      <div class="tab" role="tab" data-f="done" aria-selected="false">Called</div>
+      <div class="tab" role="tab" data-f="all"  aria-selected="false">All</div>
+    </div>
+    <input type="search" id="q" placeholder="Search name, phone or email" autocomplete="off">
+  </div>
+  <div id="list"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+  <div class="note" id="note"></div>
+</div>
+
+<script>
+const KEY = new URLSearchParams(location.search).get("k") || "";
+const API = "https://sqfepgxaurtkqftknobl.supabase.co/functions/v1/pickleball-leads-view";
+
+/* Meta stores the option KEY for custom questions, not the label the person saw,
+   so map them back to something a staff member can read at a glance. */
+const LABEL = {
+  intro_session:"Intro session", court_hire:"Court hire", league_clinic:"League / clinic",
+  coaching:"Coaching", singles_fri:"Friday · Singles", gender_doubles_sat:"Saturday · Gender doubles",
+  mixed_doubles_sun:"Sunday · Mixed doubles", all_three:"All three days", not_sure:"Not sure yet",
+  never_played:"Never played", beginner:"Beginner", improver:"Improver",
+  intermediate:"Intermediate", advanced:"Advanced", "3_to_3_5":"3.0–3.5",
+  this_week:"Wants to start THIS WEEK", next_2_weeks:"Within 2 weeks",
+  next_month:"Within a month", just_exploring:"Just exploring",
+  first:"First tournament", first_time:"First tournament",
+  some:"Played a few", few_times:"Played a few", regular:"Competes regularly"
+};
+const HOT = new Set(["this_week","next_2_weeks"]);
+const lab = v => LABEL[v] || (v ? String(v).replace(/_/g," ") : "");
+const esc = s => String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* iOS wants &body=, Android wants ?body= — get this wrong and the text is blank. */
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+  || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+function smsLink(num, msg){
+  return "sms:" + num + (isIOS ? "&" : "?") + "body=" + encodeURIComponent(msg);
+}
+function ago(iso){
+  const d = (Date.now() - new Date(iso).getTime())/86400000;
+  if (d < 1) return "today";
+  if (d < 2) return "yesterday";
+  if (d < 14) return Math.floor(d)+" days ago";
+  if (d < 60) return Math.floor(d/7)+" wks ago";
+  return new Date(iso).toLocaleDateString("en-AU",{day:"numeric",month:"short"});
+}
+
+let DATA = [], filter = "todo";
+
+function draw(){
+  const q = (document.getElementById("q").value||"").toLowerCase().trim();
+  let rows = DATA.filter(l =>
+    filter==="all" ? true : filter==="done" ? !!l.contacted_at : !l.contacted_at);
+  if (q) rows = rows.filter(l =>
+    ((l.full_name||"")+" "+(l.phone_raw||"")+" "+(l.phone_e164||"")+" "+(l.email||"")).toLowerCase().includes(q));
+
+  const list = document.getElementById("list");
+  if (!rows.length){
+    list.innerHTML = `<div class="empty">${filter==="todo"
+      ? "Nothing left to call. Nice work." : "Nothing here."}</div>`;
+    return;
+  }
+  list.innerHTML = rows.map(l => {
+    const days = (Date.now()-new Date(l.submitted_at).getTime())/86400000;
+    const first = (l.full_name||"there").split(" ")[0];
+    const msg = `Hi ${first}, it's Pickleball Palace on the Sunshine Coast returning your enquiry. When suits for a hit?`;
+    const done = !!l.contacted_at;
+    return `<div class="lead ${done?"done":""}">
+      <div class="ltop">
+        <div class="lname">${esc(l.full_name||"(no name given)")}</div>
+        <div class="lwhen ${days>=80?"warn":""}">${ago(l.submitted_at)}</div>
+      </div>
+      <div class="chips">
+        ${l.preferred_event?`<span class="chip">${esc(lab(l.preferred_event))}</span>`:""}
+        ${l.skill_level?`<span class="chip">${esc(lab(l.skill_level))}</span>`:""}
+        ${l.tournament_experience?`<span class="chip ${HOT.has(l.tournament_experience)?"hot":""}">${esc(lab(l.tournament_experience))}</span>`:""}
+      </div>
+      <div class="contact">${esc(l.phone_raw||l.phone_e164||"")}${l.email?" · "+esc(l.email):""}</div>
+      <div class="btns">
+        ${l.phone_e164?`<a class="btn call" href="tel:${esc(l.phone_e164)}">CALL</a>
+        <a class="btn text" href="${esc(smsLink(l.phone_e164,msg))}">TEXT</a>`:""}
+        ${l.email?`<a class="btn mail" href="mailto:${esc(l.email)}" aria-label="Email">✉</a>`:""}
+      </div>
+      <button class="tick ${done?"on":""}" data-id="${esc(l.lead_id)}" data-done="${done?1:0}">
+        ${done ? "✓ Called"+(l.contacted_by?" · "+esc(l.contacted_by):"") : "Mark as called"}
+      </button>
+    </div>`;
+  }).join("");
+
+  list.querySelectorAll(".tick").forEach(b => b.addEventListener("click", () => mark(b)));
+}
+
+async function mark(btn){
+  const id = btn.dataset.id, undo = btn.dataset.done === "1";
+  btn.disabled = true; btn.textContent = undo ? "Undoing…" : "Saving…";
+  try{
+    const r = await fetch(API, {method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({k:KEY, lead_id:id, undo: undo?"1":"0", by:"staff"})});
+    if(!r.ok) throw new Error("save failed");
+    const row = DATA.find(x=>x.lead_id===id);
+    if(row){ row.contacted_at = undo ? null : new Date().toISOString(); row.contacted_by = undo?null:"staff"; }
+    recount(); draw();
+  }catch(e){
+    btn.disabled=false; btn.textContent = "Couldn't save — tap to retry";
+  }
+}
+
+function recount(){
+  const total=DATA.length, done=DATA.filter(l=>l.contacted_at).length;
+  const exp=DATA.filter(l=>(Date.now()-new Date(l.submitted_at).getTime())/86400000>=80).length;
+  document.getElementById("stats").innerHTML =
+    `<div class="stat"><div class="n">${total-done}</div><div class="l">to call</div></div>
+     <div class="stat"><div class="n">${done}</div><div class="l">called</div></div>
+     <div class="stat"><div class="n">${exp}</div><div class="l">expiring</div></div>`;
+}
+
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => {
+  document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-selected","false"));
+  t.setAttribute("aria-selected","true"); filter = t.dataset.f; draw();
+}));
+document.getElementById("q").addEventListener("input", draw);
+
+if(!KEY){
+  document.getElementById("list").innerHTML =
+    `<div class="empty"><strong>This link is incomplete.</strong><br>Open the full staff link you were sent.</div>`;
+}else{
+  fetch(API+"?k="+encodeURIComponent(KEY)+"&scope=all",{cache:"no-store"})
+    .then(r=>{ if(r.status===401) throw new Error("__KEY__"); if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); })
+    .then(d=>{
+      DATA = d.leads||[]; recount(); draw();
+      document.getElementById("note").innerHTML =
+        `Showing the ${DATA.length} most recent of ${d.totals.total} leads. Updated every 15 minutes.<br>
+         &ldquo;Expiring&rdquo; means Facebook deletes it soon — those are worth calling first.`;
+    })
+    .catch(e=>{
+      document.getElementById("list").innerHTML = e.message==="__KEY__"
+        ? `<div class="empty"><strong>This staff link isn't valid.</strong><br>Ask Jarrod for an updated one.</div>`
+        : `<div class="empty"><strong>Couldn't load leads.</strong><br>Please pull down to refresh in a moment.</div>`;
+    });
+}
+</script>
+</body>
+</html>
