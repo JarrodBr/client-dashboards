@@ -23,6 +23,7 @@
     --critical:#d03b3b;
     --brand-1:#0f2b46;
     --brand-2:#1baf7a;
+    --accent-budget:#0f2b46;
     --shadow:0 1px 2px rgba(16,24,40,.05), 0 8px 24px -12px rgba(16,24,40,.18);
     --radius:16px;
   }
@@ -32,6 +33,7 @@
       --surface-1:#12171f; --plane:#0b0e13; --card-ring:rgba(255,255,255,.10);
       --text-primary:#ffffff; --text-secondary:#c3c9d2; --muted:#8b95a1;
       --grid:#222932; --baseline:#333c47; --series-1:#3987e5; --series-2:#d95926;
+      --accent-budget:#7f9dc0;
       --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
     }
   }
@@ -40,6 +42,7 @@
     --surface-1:#12171f; --plane:#0b0e13; --card-ring:rgba(255,255,255,.10);
     --text-primary:#ffffff; --text-secondary:#c3c9d2; --muted:#8b95a1;
     --grid:#222932; --baseline:#333c47; --series-1:#3987e5; --series-2:#d95926;
+    --accent-budget:#7f9dc0;
     --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
   }
 
@@ -519,7 +522,7 @@ function render(d){
       cpl?"What each lead costs you":"Shows once leads arrive", "var(--series-1)") +
     kpiTile("Spent so far", money(t.spend), "Since the ads went live", "var(--series-2)") +
     kpiTile("Daily budget", money(b.daily_total,0),
-      `About ${money(b.monthly_pace,0)} a month`, "var(--brand-1)");
+      `About ${money(b.monthly_pace,0)} a month`, "var(--accent-budget)");
 
   /* creative — promoted to the top so the client sees what's running */
   const imgs=d.images||{};
