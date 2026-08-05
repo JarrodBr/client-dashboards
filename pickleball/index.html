@@ -331,9 +331,9 @@ function loadLeadCount(){
       if(!d || !d.totals || !d.totals.current) return;
       const c = d.totals.current;
       document.getElementById("ctasub").textContent = c.uncontacted > 0
-        ? `${int(c.uncontacted)} to call from this campaign — tap to call or text`
+        ? `${int(c.uncontacted)} of ${int(c.total)} still to call — tap to call or text`
         : (c.total > 0
-            ? `All ${int(c.total)} called. Tap to review or text them.`
+            ? `All ${int(c.total)} leads contacted — tap to review or text them`
             : "Tap to call or text every enquiry");
     })
     .catch(()=>{ /* keep the default subtitle */ });
@@ -386,7 +386,7 @@ function lineChart(el, rows, key, opts){
 
   el.innerHTML = `<div class="chart-head">
       <span class="chart-title">${esc(opts.title)}</span>
-      <span class="chart-total">${pts.length > 1 ? "last 30 days" : ""}</span>
+      <span class="chart-total">${pts.length > 1 ? "since launch" : ""}</span>
     </div>`;
 
   if(!pts.length){
@@ -574,8 +574,8 @@ function render(d){
       <div class="stepn">3</div>
       <h3>Your team calls them</h3>
       <p>Every lead lands in your <a href="${LEADS_URL}"><strong>call list</strong></a>
-         with their number ready to tap, so nobody gets missed.
-         Your team also gets an email the moment one comes in.</p>
+         within minutes, with their number ready to tap and a tick to mark them off —
+         so nobody gets missed and you can see who has already been rung.</p>
     </div>`;
 
   /* charts — two separate single-series plots, never a dual axis */
