@@ -514,7 +514,7 @@ function render(d){
   const cpl=t.cost_per_lead;
   document.getElementById("kpis").innerHTML =
     kpiTile("Leads", int(t.leads),
-      t.leads>0 ? "Name, phone, email and preferred day" : "None yet", "var(--brand-2)") +
+      t.leads>0 ? "Every one has name, email and phone" : "None yet", "var(--brand-2)") +
     kpiTile("Cost per lead", cpl?money(cpl):"—",
       cpl?"What each lead costs you":"Shows once leads arrive", "var(--series-1)") +
     kpiTile("Spent so far", money(t.spend), "Since the ads went live", "var(--series-2)") +
@@ -561,7 +561,8 @@ function render(d){
       <div class="stepn">1</div>
       <h3>They fill in a short form</h3>
       <p>It opens straight inside Facebook or Instagram, so nobody has to leave the app.
-         We ask their name, phone and email, their standard, and which of the three days suit them.</p>
+         <strong>First and last name, email and phone are all compulsory</strong> — Facebook won't
+         let them submit without every one — plus their standard and which days suit them.</p>
     </div>
     <div class="step">
       <div class="stepn">2</div>
