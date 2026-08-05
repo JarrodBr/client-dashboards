@@ -78,6 +78,14 @@
         background:var(--plane);color:var(--ink2);font-weight:620;font-size:.8125rem;
         cursor:pointer;font-family:inherit}
   .tick.on{background:rgba(14,159,110,.12);border-color:rgba(14,159,110,.4);color:var(--green)}
+  .addname{background:none;border:0;padding:0;margin-left:8px;font-size:.75rem;
+           font-weight:640;color:var(--blue);cursor:pointer;font-family:inherit;
+           text-decoration:underline;-webkit-tap-highlight-color:transparent}
+  .namewrap{display:flex;gap:6px;margin-top:8px}
+  .namewrap input{flex:1;padding:10px 12px;border-radius:9px;border:1px solid var(--ring);
+                  background:var(--plane);color:var(--ink);font-size:16px;font-family:inherit}
+  .namewrap button{padding:10px 16px;border-radius:9px;border:0;background:var(--green);
+                   color:#fff;font-weight:700;font-size:.8125rem;cursor:pointer;font-family:inherit}
   .empty{text-align:center;color:var(--muted);padding:40px 20px;font-size:.875rem}
   .note{font-size:.75rem;color:var(--muted);text-align:center;margin-top:18px;line-height:1.6}
   .note a{color:var(--blue)}
@@ -177,7 +185,9 @@ function draw(){
     const done = !!l.contacted_at;
     return `<div class="lead ${done?"done":""}">
       <div class="ltop">
-        <div class="lname">${esc(l.full_name||"(no name given)")}</div>
+        <div class="lname">${esc(l.full_name||"(no name given)")}${
+          (l.full_name||"").trim().includes(" ") ? ""
+          : `<button class="addname" data-add="${esc(l.lead_id)}">+ surname</button>`}</div>
         <div class="lwhen">${ago(l.submitted_at)}</div>
       </div>
       <div class="chips">
@@ -198,6 +208,39 @@ function draw(){
   }).join("");
 
   list.querySelectorAll(".tick").forEach(b => b.addEventListener("click", () => mark(b)));
+  list.querySelectorAll(".addname").forEach(b => b.addEventListener("click", () => askName(b)));
+}
+
+/* Meta never collected a surname on the old general-interest form, so there is
+   nothing to fetch — staff capture it on the phone and it saves against the lead. */
+function askName(btn){
+  const id = btn.dataset.add;
+  const row = DATA.find(x => x.lead_id === id);
+  if (!row || btn.dataset.open === "1") return;
+  btn.dataset.open = "1";
+  const card = btn.closest(".lead");
+  const wrap = document.createElement("div");
+  wrap.className = "namewrap";
+  wrap.innerHTML = `<input type="text" placeholder="Surname" autocomplete="family-name">
+                    <button type="button">Save</button>`;
+  card.querySelector(".ltop").insertAdjacentElement("afterend", wrap);
+  const input = wrap.querySelector("input"), save = wrap.querySelector("button");
+  input.focus();
+  const commit = async () => {
+    const surname = input.value.trim();
+    if (surname.length < 2) { input.focus(); return; }
+    save.disabled = true; save.textContent = "…";
+    try{
+      const full = (row.full_name || "").trim() + " " + surname;
+      const r = await fetch(API, {method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({k:KEY, lead_id:id, full_name: full})});
+      if(!r.ok) throw new Error();
+      row.full_name = full;
+      draw();
+    }catch(e){ save.disabled = false; save.textContent = "Retry"; }
+  };
+  save.addEventListener("click", commit);
+  input.addEventListener("keydown", e => { if(e.key === "Enter") commit(); });
 }
 
 async function mark(btn){
