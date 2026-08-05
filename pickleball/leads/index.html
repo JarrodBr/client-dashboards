@@ -171,7 +171,9 @@ function draw(){
   }
   list.innerHTML = rows.map(l => {
     const first = (l.full_name||"there").split(" ")[0];
-    const msg = `Hi ${first}, it's Pickleball Palace on the Sunshine Coast returning your enquiry. When suits for a hit?`;
+    const msg = l.form_id === CURRENT_FORM
+      ? `Hi ${first}, it's Pickleball Palace about the Spring Tournament (25-27 Sept). Happy to answer any questions and get you locked in.`
+      : `Hi ${first}, it's Pickleball Palace on the Sunshine Coast returning your enquiry. When suits for a hit?`;
     const done = !!l.contacted_at;
     return `<div class="lead ${done?"done":""}">
       <div class="ltop">
@@ -223,12 +225,13 @@ function recount(){
 
   const set = campaign === "current" ? cur : ear;
   const done = set.filter(l=>l.contacted_at).length;
+  const today = new Date().toDateString();
   const week = set.filter(l =>
-    (Date.now()-new Date(l.submitted_at).getTime())/86400000 <= 7).length;
+    new Date(l.submitted_at).toDateString() === today).length;
   document.getElementById("stats").innerHTML =
     `<div class="stat"><div class="n">${set.length-done}</div><div class="l">to call</div></div>
      <div class="stat"><div class="n">${done}</div><div class="l">called</div></div>
-     <div class="stat"><div class="n">${week}</div><div class="l">this week</div></div>`;
+     <div class="stat"><div class="n">${week}</div><div class="l">new today</div></div>`;
 }
 
 document.querySelectorAll(".segb").forEach(b => b.addEventListener("click", () => {
