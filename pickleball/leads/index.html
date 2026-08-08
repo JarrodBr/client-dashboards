@@ -156,10 +156,10 @@ function ago(iso){
   return new Date(iso).toLocaleDateString("en-AU",{day:"numeric",month:"short"});
 }
 
-let DATA = [], filter = "todo", campaign = "current", CURRENT_FORM = "";
+let DATA = [], filter = "todo", campaign = "current", SPRING_FORMS = [];
 
 const inCampaign = l =>
-  campaign === "current" ? l.form_id === CURRENT_FORM : l.form_id !== CURRENT_FORM;
+  campaign === "current" ? SPRING_FORMS.includes(l.form_id) : !SPRING_FORMS.includes(l.form_id);
 
 function draw(){
   const q = (document.getElementById("q").value||"").toLowerCase().trim();
@@ -179,7 +179,7 @@ function draw(){
   }
   list.innerHTML = rows.map(l => {
     const first = (l.full_name||"there").split(" ")[0];
-    const msg = l.form_id === CURRENT_FORM
+    const msg = SPRING_FORMS.includes(l.form_id)
       ? `Hi ${first}, it's Pickleball Palace about the Spring Tournament (25-27 Sept). Happy to answer any questions and get you locked in.`
       : `Hi ${first}, it's Pickleball Palace on the Sunshine Coast returning your enquiry. When suits for a hit?`;
     const done = !!l.contacted_at;
@@ -259,8 +259,8 @@ async function mark(btn){
 }
 
 function recount(){
-  const cur = DATA.filter(l => l.form_id === CURRENT_FORM);
-  const ear = DATA.filter(l => l.form_id !== CURRENT_FORM);
+  const cur = DATA.filter(l => SPRING_FORMS.includes(l.form_id));
+  const ear = DATA.filter(l => !SPRING_FORMS.includes(l.form_id));
   document.getElementById("segc").textContent =
     `${cur.filter(l=>!l.contacted_at).length} to call`;
   document.getElementById("sege").textContent =
@@ -296,7 +296,8 @@ if(!KEY){
       .then(r=>{ if(r.status===401) throw new Error("__KEY__"); if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); })
       .then(d=>{
         const incoming = d.leads||[];
-        CURRENT_FORM = d.current_form || CURRENT_FORM;
+        SPRING_FORMS = Array.isArray(d.spring_forms) && d.spring_forms.length
+          ? d.spring_forms : SPRING_FORMS;
         /* Only redraw when something actually changed, so a staff member
            scrolling through the list doesn't get yanked back to the top. */
         const sig = a => a.map(l=>l.lead_id+(l.contacted_at?"1":"0")).join(",");
