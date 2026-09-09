@@ -38,6 +38,11 @@
   .stat .n{font-size:1.25rem;font-weight:700;line-height:1.1}
   .stat .l{font-size:.6875rem;color:rgba(255,255,255,.75);margin-top:1px}
 
+  .alert{display:none;margin:12px 0 0;padding:12px 14px;border-radius:12px;
+    background:var(--surface);border:1px solid var(--amber);
+    border-left:4px solid var(--amber);box-shadow:var(--shadow);font-size:14px;color:var(--ink2)}
+  .alert.on{display:block}
+  .alert b{color:var(--amber)}
   .tools{position:sticky;top:0;z-index:20;background:var(--plane);
          padding:12px 0 10px;border-bottom:1px solid var(--line)}
   .seg{display:flex;gap:6px;margin-bottom:8px}
@@ -104,6 +109,7 @@
 </header>
 
 <div class="wrap">
+  <div class="alert" id="alert"></div>
   <div class="tools">
     <div class="seg" role="tablist">
       <div class="segb" role="tab" data-c="current" aria-selected="true">Spring Tournament<small id="segc"></small></div>
@@ -258,6 +264,25 @@ async function mark(btn){
   }
 }
 
+/* Pipeline health. The Make poller silently unscheduled itself on 14-Aug-2026
+   and nobody noticed for 26 days, because a list with no new names looks the
+   same as a quiet week. The page now says so itself. Threshold lives on the
+   server (30h; longest real gap on record is 22.6h). */
+function renderHealth(h){
+  const el = document.getElementById("alert");
+  if(!el) return;
+  if(!h || !h.stale){ el.className = "alert"; el.innerHTML = ""; return; }
+  const hrs = h.hours_since_last_lead;
+  const since = hrs == null ? "a while"
+              : hrs < 48   ? Math.round(hrs) + " hours"
+                           : Math.round(hrs/24) + " days";
+  el.innerHTML =
+    `<b>&#9888; No new enquiries for ${since}.</b><br>
+     That's longer than this campaign normally goes. The ads or the lead
+     connection may need attention &mdash; worth letting Jarrod know.`;
+  el.className = "alert on";
+}
+
 function recount(){
   const cur = DATA.filter(l => SPRING_FORMS.includes(l.form_id));
   const ear = DATA.filter(l => !SPRING_FORMS.includes(l.form_id));
@@ -303,6 +328,7 @@ if(!KEY){
         const sig = a => a.map(l=>l.lead_id+(l.contacted_at?"1":"0")).join(",");
         const changed = initial || sig(incoming) !== sig(DATA);
         DATA = incoming;
+        renderHealth(d.health);
         if (changed){ recount(); draw(); }
         if (initial){
           document.getElementById("note").innerHTML =
