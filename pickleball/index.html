@@ -433,19 +433,20 @@ const ENDPOINT = "https://sqfepgxaurtkqftknobl.supabase.co/functions/v1/pickleba
   + "?k=" + encodeURIComponent(ACCESS_KEY);
 
 /* The call list holds personal contact details and sits behind its own key,
-   separate from this dashboard's. It is embedded so the venue's team can reach
-   their leads in one tap; ?s= overrides it if the key is ever rotated.
+   separate from this dashboard's. The dashboard endpoint hands that key over
+   only to a valid dashboard link, so it never sits in this public source
+   (it was hard-coded here until 29-Sep-2026). ?s= still overrides it.
    Consequence: anyone with THIS link can also open the call list, so it should
    stay within the venue's team. */
-const LEADS_KEY = new URLSearchParams(location.search).get("s")
-  || "55db959719d60621489c6d35";
+let LEADS_KEY = new URLSearchParams(location.search).get("s") || "";
 const LEADS_API = "https://sqfepgxaurtkqftknobl.supabase.co/functions/v1/pickleball-leads-view";
-const LEADS_URL = "leads/?k=" + encodeURIComponent(LEADS_KEY);
+const leadsUrl = () => LEADS_KEY ? "leads/?k=" + encodeURIComponent(LEADS_KEY) : "#";
 
 /* Live counts in the call-to-action, so staff can see what's waiting. */
 function loadLeadCount(){
   const cta = document.getElementById("leadcta");
-  if (cta) cta.href = LEADS_URL;
+  if (cta) cta.href = leadsUrl();
+  if (!LEADS_KEY) return;
   fetch(LEADS_API + "?k=" + encodeURIComponent(LEADS_KEY), {cache:"no-store"})
     .then(r => r.ok ? r.json() : null)
     .then(d => {
@@ -699,7 +700,7 @@ function renderFeed(d){
         <div class="fstate">${r.called ? statusPill("CALLED_OK") : statusPill("NOT_CALLED")}</div>
       </div>`).join("")}</div>
     <div class="feedfoot">Showing the latest ${Math.min(8, rows.length)}.
-      <a href="${LEADS_URL}">Open the call list</a> for every lead, old and new, with their details.</div>`;
+      <a href="${leadsUrl()}">Open the call list</a> for every lead, old and new, with their details.</div>`;
 }
 STATUS.CALLED_OK  = {label:"Called",          color:"var(--good)",    icon:"check"};
 STATUS.NOT_CALLED = {label:"Not called yet",  color:"var(--warning)", icon:"clock"};
@@ -729,7 +730,7 @@ function renderPast(d){
       </div>
       ${cl.total ? `<div class="progress" role="img" aria-label="${pct}% of leads called"><span style="width:${pct}%"></span></div>
         <div class="progress-l"><strong>${int(cl.contacted)} of ${int(cl.total)}</strong> leads marked as called
-          ${cl.total - cl.contacted > 0 ? ` · <a href="${LEADS_URL}" style="color:var(--series-1)">${int(cl.total - cl.contacted)} still worth a call</a>` : ""}</div>` : ""}
+          ${cl.total - cl.contacted > 0 ? ` · <a href="${leadsUrl()}" style="color:var(--series-1)">${int(cl.total - cl.contacted)} still worth a call</a>` : ""}</div>` : ""}
       ${ads.length ? `<details class="pastads"><summary>See this campaign's ads (${ads.length})</summary>
         <div class="minis">${ads.map(a => {
           const src = a.image_hash && imgs[a.image_hash] ? imgs[a.image_hash] : null;
@@ -743,6 +744,7 @@ function renderPast(d){
 
 function render(d){
   DATA = d;
+  if (!new URLSearchParams(location.search).get("s") && d.staff_leads_key) LEADS_KEY = d.staff_leads_key;
   const t=d.totals||{}, b=d.budget||{}, tg=d.targeting||{};
   const cc = d.current_campaign || {};
   const cur = (d.ads||[]).filter(a => a.is_current);
@@ -806,7 +808,7 @@ function render(d){
     <div class="step">
       <div class="stepn">3</div>
       <h3>Your team calls them</h3>
-      <p>Every lead lands in your <a href="${LEADS_URL}"><strong>call list</strong></a>
+      <p>Every lead lands in your <a href="${leadsUrl()}"><strong>call list</strong></a>
          within 30 minutes, with their number ready to tap and a tick to mark them off,
          so nobody gets missed and you can see who has already been rung.</p>
     </div>`;
@@ -893,9 +895,8 @@ if(!ACCESS_KEY){
   notice("This link is incomplete.",
     "Please open the full dashboard link you were sent — it ends with a personal access code.");
 }else{
-  loadLeadCount();
   setInterval(loadLeadCount, 300_000);
-  load().then(startPolling).catch(err=>{
+  load().then(()=>{ loadLeadCount(); startPolling(); }).catch(err=>{
     if(err.message==="__BADKEY__"){
       notice("This dashboard link isn't valid.",
         "The access code in your link has expired or is incorrect. Please ask for an updated link.");
