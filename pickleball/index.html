@@ -238,6 +238,10 @@
         cursor:pointer;display:inline-flex;align-items:center;gap:7px}
   .fbtn i{width:8px;height:8px;border-radius:50%;display:block}
   .fbtn[aria-pressed="true"]{background:var(--brand-1);border-color:var(--brand-1);color:#fff}
+  @media (prefers-color-scheme: dark){
+    :root:where(:not([data-theme="light"])) .fbtn[aria-pressed="true"]{background:#2c5d8f;border-color:#2c5d8f}
+  }
+  :root[data-theme="dark"] .fbtn[aria-pressed="true"]{background:#2c5d8f;border-color:#2c5d8f}
   .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:14px}
   @media (max-width:560px){ .gallery{grid-template-columns:1fr} }
   .gad{overflow:hidden;display:flex;flex-direction:column}
