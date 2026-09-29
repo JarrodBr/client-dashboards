@@ -111,10 +111,7 @@
 <div class="wrap">
   <div class="alert" id="alert"></div>
   <div class="tools">
-    <div class="seg" role="tablist">
-      <div class="segb" role="tab" data-c="current" aria-selected="true">Spring Tournament<small id="segc"></small></div>
-      <div class="segb" role="tab" data-c="earlier" aria-selected="false">Earlier enquiries<small id="sege"></small></div>
-    </div>
+    <div class="seg" role="tablist" id="seg"></div>
     <div class="tabs" role="tablist">
       <div class="tab" role="tab" data-f="todo" aria-selected="true">To call</div>
       <div class="tab" role="tab" data-f="done" aria-selected="false">Called</div>
@@ -133,6 +130,10 @@ const API = "https://sqfepgxaurtkqftknobl.supabase.co/functions/v1/pickleball-le
 /* Meta stores the option KEY for custom questions, not the label the person saw,
    so map them back to something a staff member can read at a glance. */
 const LABEL = {
+  christmas_party:"Work Christmas party", team_building:"Team building day",
+  private_party:"Private party", other_event:"Other event",
+  under_15:"Under 15 people", "15_30":"15–30 people", "30_60":"30–60 people", "60_plus":"60+ people",
+  november:"November", early_dec:"1–12 December", late_dec:"13–24 December",
   intro_session:"Intro session", court_hire:"Court hire", league_clinic:"League / clinic",
   coaching:"Coaching", singles_fri:"Friday · Singles", gender_doubles_sat:"Saturday · Gender doubles",
   mixed_doubles_sun:"Sunday · Mixed doubles", all_three:"All three days", not_sure:"Not sure yet",
@@ -143,7 +144,7 @@ const LABEL = {
   first:"First tournament", first_time:"First tournament",
   some:"Played a few", few_times:"Played a few", regular:"Competes regularly"
 };
-const HOT = new Set(["this_week","next_2_weeks"]);
+const HOT = new Set(["this_week","next_2_weeks","november","early_dec","30_60","60_plus"]);
 const lab = v => LABEL[v] || (v ? String(v).replace(/_/g," ") : "");
 const esc = s => String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -162,10 +163,24 @@ function ago(iso){
   return new Date(iso).toLocaleDateString("en-AU",{day:"numeric",month:"short"});
 }
 
-let DATA = [], filter = "todo", campaign = "current", SPRING_FORMS = [];
+/* Campaign tabs come from the server (newest campaign first, then
+   "Earlier enquiries"); each lead carries its group key. */
+let DATA = [], GROUPS = [], CURRENT = "", filter = "todo", campaign = "";
 
-const inCampaign = l =>
-  campaign === "current" ? SPRING_FORMS.includes(l.form_id) : !SPRING_FORMS.includes(l.form_id);
+const inCampaign = l => (l.group || "earlier") === campaign;
+const groupLabel = k => (GROUPS.find(g => g.key === k) || {label:""}).label;
+
+/* Prefilled text per campaign, so staff aren't writing it from scratch. */
+function smsText(l, first){
+  if (l.group === "events"){
+    const what = {christmas_party:"Christmas party", team_building:"team building day",
+                  private_party:"private party"}[l.preferred_event] || "event";
+    return `Hi ${first}, it's Pickleball Palace on the Sunshine Coast about your ${what} enquiry. Happy to talk dates and packages. When's a good time for a quick call?`;
+  }
+  if (l.group === "spring")
+    return `Hi ${first}, it's Pickleball Palace on the Sunshine Coast. Thanks for your interest in the Spring Tournament. We'd love to get you on court, when suits for a hit?`;
+  return `Hi ${first}, it's Pickleball Palace on the Sunshine Coast returning your enquiry. When suits for a hit?`;
+}
 
 function draw(){
   const q = (document.getElementById("q").value||"").toLowerCase().trim();
@@ -177,17 +192,15 @@ function draw(){
   const list = document.getElementById("list");
   if (!rows.length){
     list.innerHTML = `<div class="empty">${filter==="todo"
-      ? (campaign==="current"
-          ? "No new leads to call yet. They'll appear here as they come in."
+      ? (campaign===CURRENT
+          ? `No ${esc(groupLabel(campaign))} enquiries waiting. New ones appear here within 30 minutes of someone filling in the form.`
           : "Nothing left to call. Nice work.")
       : "Nothing here."}</div>`;
     return;
   }
   list.innerHTML = rows.map(l => {
     const first = (l.full_name||"there").split(" ")[0];
-    const msg = SPRING_FORMS.includes(l.form_id)
-      ? `Hi ${first}, it's Pickleball Palace about the Spring Tournament (25-27 Sept). Happy to answer any questions and get you locked in.`
-      : `Hi ${first}, it's Pickleball Palace on the Sunshine Coast returning your enquiry. When suits for a hit?`;
+    const msg = smsText(l, first);
     const done = !!l.contacted_at;
     return `<div class="lead ${done?"done":""}">
       <div class="ltop">
@@ -198,7 +211,7 @@ function draw(){
       </div>
       <div class="chips">
         ${l.preferred_event?`<span class="chip">${esc(lab(l.preferred_event))}</span>`:""}
-        ${l.skill_level?`<span class="chip">${esc(lab(l.skill_level))}</span>`:""}
+        ${l.skill_level?`<span class="chip ${HOT.has(l.skill_level)?"hot":""}">${esc(lab(l.skill_level))}</span>`:""}
         ${l.tournament_experience?`<span class="chip ${HOT.has(l.tournament_experience)?"hot":""}">${esc(lab(l.tournament_experience))}</span>`:""}
       </div>
       <div class="contact">${esc(l.phone_raw||l.phone_e164||"")}${l.email?" · "+esc(l.email):""}</div>
@@ -266,32 +279,38 @@ async function mark(btn){
 
 /* Pipeline health. The Make poller silently unscheduled itself on 14-Aug-2026
    and nobody noticed for 26 days, because a list with no new names looks the
-   same as a quiet week. The page now says so itself. Threshold lives on the
-   server (30h; longest real gap on record is 22.6h). */
+   same as a quiet week. The server now stamps every successful lead sync and
+   flags it stale after 2h (syncs run every 30 min), so a quiet campaign no
+   longer looks like a fault and a real fault shows within hours. */
 function renderHealth(h){
   const el = document.getElementById("alert");
   if(!el) return;
   if(!h || !h.stale){ el.className = "alert"; el.innerHTML = ""; return; }
-  const hrs = h.hours_since_last_lead;
+  const hrs = h.hours_since_last_poll;
   const since = hrs == null ? "a while"
               : hrs < 48   ? Math.round(hrs) + " hours"
                            : Math.round(hrs/24) + " days";
   el.innerHTML =
-    `<b>&#9888; No new enquiries for ${since}.</b><br>
-     That's longer than this campaign normally goes. The ads or the lead
-     connection may need attention &mdash; worth letting Jarrod know.`;
+    `<b>&#9888; New leads haven't synced for ${since}.</b><br>
+     Anyone who enquired since then won't be on this list yet &mdash; let Jarrod know.`;
   el.className = "alert on";
 }
 
-function recount(){
-  const cur = DATA.filter(l => SPRING_FORMS.includes(l.form_id));
-  const ear = DATA.filter(l => !SPRING_FORMS.includes(l.form_id));
-  document.getElementById("segc").textContent =
-    `${cur.filter(l=>!l.contacted_at).length} to call`;
-  document.getElementById("sege").textContent =
-    `${ear.filter(l=>!l.contacted_at).length} to call`;
+function drawSeg(){
+  const seg = document.getElementById("seg");
+  seg.innerHTML = GROUPS.map(g => {
+    const todo = DATA.filter(l => (l.group||"earlier") === g.key && !l.contacted_at).length;
+    return `<div class="segb" role="tab" data-c="${esc(g.key)}" aria-selected="${g.key===campaign}">
+      ${esc(g.label)}<small>${todo} to call</small></div>`;
+  }).join("");
+  seg.querySelectorAll(".segb").forEach(b => b.addEventListener("click", () => {
+    campaign = b.dataset.c; recount(); draw();
+  }));
+}
 
-  const set = campaign === "current" ? cur : ear;
+function recount(){
+  drawSeg();
+  const set = DATA.filter(inCampaign);
   const done = set.filter(l=>l.contacted_at).length;
   const today = new Date().toDateString();
   const week = set.filter(l =>
@@ -302,10 +321,6 @@ function recount(){
      <div class="stat"><div class="n">${week}</div><div class="l">new today</div></div>`;
 }
 
-document.querySelectorAll(".segb").forEach(b => b.addEventListener("click", () => {
-  document.querySelectorAll(".segb").forEach(x=>x.setAttribute("aria-selected","false"));
-  b.setAttribute("aria-selected","true"); campaign = b.dataset.c; recount(); draw();
-}));
 document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => {
   document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-selected","false"));
   t.setAttribute("aria-selected","true"); filter = t.dataset.f; draw();
@@ -321,8 +336,16 @@ if(!KEY){
       .then(r=>{ if(r.status===401) throw new Error("__KEY__"); if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); })
       .then(d=>{
         const incoming = d.leads||[];
-        SPRING_FORMS = Array.isArray(d.spring_forms) && d.spring_forms.length
-          ? d.spring_forms : SPRING_FORMS;
+        GROUPS = Array.isArray(d.groups) ? d.groups : GROUPS;
+        CURRENT = d.current_group || CURRENT;
+        if (initial){
+          /* Open on the running campaign; if it has nobody yet, open on the
+             first campaign that still has people to call. */
+          const cur = GROUPS.find(g => g.key === CURRENT);
+          const waiting = GROUPS.find(g => g.totals && g.totals.uncontacted > 0);
+          campaign = cur && cur.totals && cur.totals.total > 0 ? CURRENT
+                   : (waiting ? waiting.key : CURRENT);
+        }
         /* Only redraw when something actually changed, so a staff member
            scrolling through the list doesn't get yanked back to the top. */
         const sig = a => a.map(l=>l.lead_id+(l.contacted_at?"1":"0")).join(",");
@@ -331,9 +354,11 @@ if(!KEY){
         renderHealth(d.health);
         if (changed){ recount(); draw(); }
         if (initial){
+          const past = GROUPS.filter(g => g.key !== CURRENT && g.key !== "earlier").map(g => g.label);
           document.getElementById("note").innerHTML =
-            `<strong>Spring Tournament</strong> is the campaign running now.
-             <strong>Earlier enquiries</strong> are people who enquired before it started.<br>
+            `<strong>${esc(groupLabel(CURRENT))}</strong> is the campaign running now.
+             ${past.length ? `<strong>${esc(past.join(", "))}</strong> leads are from earlier campaigns and still worth a call. ` : ""}
+             <strong>Earlier enquiries</strong> came in before those campaigns.<br>
              This list checks for new leads on its own — leave it open.`;
         }
       })

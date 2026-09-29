@@ -214,6 +214,84 @@
     .thumb,.thumb-ph{width:100%;height:200px}
     .status-msg{font-size:1rem}
   }
+  /* ---- 29-Sep-2026 redesign: campaign-first layout ---- */
+  .eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:.6875rem;font-weight:700;
+    text-transform:uppercase;letter-spacing:.08em;color:var(--brand-2)}
+  .eyebrow .dot{width:7px;height:7px}
+  .camptitle{font-size:1.375rem;font-weight:690;letter-spacing:-.02em;line-height:1.25;margin:6px 0 2px}
+  .campdates{font-size:.8125rem;color:var(--muted)}
+  .status-card{padding:22px 24px;align-items:stretch}
+  .status-main{flex:1 1 420px;min-width:0}
+  .status-msg{margin-top:12px}
+  .countdown{display:flex;flex-direction:column;justify-content:center}
+
+  /* theme tag: neutral chip + coloured dot, text stays in text tokens */
+  .tag{display:inline-flex;align-items:center;gap:6px;font-size:.6875rem;font-weight:640;
+       padding:3px 9px 3px 7px;border-radius:999px;background:var(--plane);
+       border:1px solid var(--card-ring);color:var(--text-secondary);white-space:nowrap}
+  .tag i{width:8px;height:8px;border-radius:50%;flex:none;display:block}
+
+  /* ad gallery */
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px 2px}
+  .fbtn{font:inherit;font-size:.8125rem;font-weight:600;padding:7px 13px;border-radius:999px;
+        border:1px solid var(--card-ring);background:var(--surface-1);color:var(--text-secondary);
+        cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+  .fbtn i{width:8px;height:8px;border-radius:50%;display:block}
+  .fbtn[aria-pressed="true"]{background:var(--brand-1);border-color:var(--brand-1);color:#fff}
+  .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:14px}
+  @media (max-width:560px){ .gallery{grid-template-columns:1fr} }
+  .gad{overflow:hidden;display:flex;flex-direction:column}
+  .gimg{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;background:var(--plane);
+        border-bottom:1px solid var(--card-ring)}
+  .gimg.sq{aspect-ratio:1/1}
+  .gph{width:100%;aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;
+       background:var(--plane);color:var(--muted);font-size:.75rem}
+  .gbody{padding:14px 16px 12px}
+  .gbody .badges{justify-content:space-between}
+  .ghead{font-weight:640;font-size:.9375rem;line-height:1.3;letter-spacing:-.01em;margin-top:10px}
+  details.adtext{margin-top:6px}
+  details.adtext summary{font-size:.75rem;color:var(--series-1);cursor:pointer;font-weight:600;
+       list-style:none}
+  details.adtext summary::-webkit-details-marker{display:none}
+  details.adtext p{font-size:.8125rem;color:var(--text-secondary);white-space:pre-line;margin:8px 0 0}
+  .gstats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--grid);margin-top:auto}
+
+  /* latest enquiries feed (no personal details) */
+  .feed{padding:6px 0}
+  .frow{display:grid;grid-template-columns:86px 1fr auto;gap:14px;align-items:center;
+        padding:12px 20px;border-bottom:1px solid var(--grid)}
+  .frow:last-child{border-bottom:0}
+  .fwhen{font-size:.8125rem;color:var(--muted);font-variant-numeric:tabular-nums}
+  .fmain{min-width:0;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+  .fans{font-size:.875rem;color:var(--text-primary);font-weight:560}
+  .fstate{font-size:.75rem;font-weight:640;white-space:nowrap}
+  .feedfoot{padding:12px 20px;border-top:1px solid var(--grid);font-size:.8125rem;color:var(--muted)}
+  .feedfoot a{color:var(--series-1);font-weight:600}
+  @media (max-width:600px){
+    .frow{grid-template-columns:1fr auto;padding:12px 16px}
+    .fwhen{grid-column:1 / -1}
+  }
+
+  /* past campaigns */
+  .past{padding:20px 22px}
+  .pasthead{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}
+  .pastname{font-size:1.0625rem;font-weight:660;letter-spacing:-.01em}
+  .pastgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+  .pstat{background:var(--plane);border:1px solid var(--card-ring);border-radius:12px;padding:12px 14px}
+  .pstat .n{font-size:1.375rem;font-weight:680;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .pstat .l{font-size:.75rem;color:var(--muted);margin-top:2px}
+  .progress{height:8px;border-radius:99px;background:var(--grid);overflow:hidden;margin-top:14px}
+  .progress span{display:block;height:100%;background:var(--brand-2);border-radius:99px}
+  .progress-l{font-size:.8125rem;color:var(--text-secondary);margin-top:6px}
+  details.pastads{margin-top:14px;border-top:1px solid var(--grid);padding-top:12px}
+  details.pastads summary{cursor:pointer;font-size:.8125rem;font-weight:620;color:var(--series-1)}
+  .minis{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:12px}
+  .mini{display:flex;gap:10px;align-items:center;border:1px solid var(--card-ring);border-radius:12px;padding:8px}
+  .mini img,.mini .ph{width:56px;height:56px;border-radius:8px;object-fit:cover;flex:none;background:var(--plane)}
+  .mini .t{font-size:.8125rem;font-weight:600;line-height:1.3}
+  .mini .s{font-size:.75rem;color:var(--muted);margin-top:2px}
+  @media (max-width:860px){ .pastgrid{grid-template-columns:1fr 1fr} }
+  @media (max-width:430px){ .camptitle{font-size:1.1875rem} }
 </style>
 </head>
 <body>
@@ -224,7 +302,7 @@
       <div class="ball" aria-hidden="true"></div>
       <div>
         <h1>Pickleball Palace</h1>
-        <div class="sub">Spring Tournament &middot; Facebook &amp; Instagram Ads</div>
+        <div class="sub">Sunshine Coast &middot; Facebook &amp; Instagram ads</div>
       </div>
     </div>
     <div class="hero-meta">
@@ -259,24 +337,37 @@
   </section>
 
   <section>
-    <h2>Your ads</h2>
-    <p class="h2sub">Exactly what people are seeing on Facebook and Instagram right now.</p>
-    <div class="ads" id="ads"></div>
+    <h2>Your ads running now</h2>
+    <p class="h2sub" id="adsub">Exactly what people are seeing on Facebook and Instagram.</p>
+    <div class="filters" id="filters" role="group" aria-label="Filter ads by type"></div>
+    <div class="gallery" id="ads"></div>
+  </section>
+
+  <section>
+    <h2>Latest enquiries</h2>
+    <p class="h2sub">What people are asking for, newest first. Names and numbers are in your call list.</p>
+    <div class="card" id="feed"></div>
   </section>
 
   <section>
     <h2>What happens when someone taps your ad</h2>
-    <p class="h2sub">The path from seeing the ad to registering for the tournament.</p>
+    <p class="h2sub">The path from seeing the ad to a booking.</p>
     <div class="card flow" id="flowcard"></div>
   </section>
 
   <section>
     <h2>How it's tracking</h2>
-    <p class="h2sub">How each day is going.</p>
+    <p class="h2sub" id="chartsub">Each day of the current campaign.</p>
     <div class="grid2">
       <div class="card chartcard" id="leadschart"></div>
       <div class="card chartcard" id="spendchart"></div>
     </div>
+  </section>
+
+  <section id="pastsection" hidden>
+    <h2>Past campaigns</h2>
+    <p class="h2sub">How earlier campaigns finished up.</p>
+    <div id="past" style="display:grid;gap:14px"></div>
   </section>
 
   <section>
@@ -299,13 +390,36 @@
 <script>
 /* Agency byline in the footer. Change this one string to white-label. */
 const AGENCY = "Be Branded";
-/* First day of the tournament, used for the countdown. */
-const EVENT_DATE = "2026-09-25";
-const EVENT_NAME = "Spring Tournament";
-/* Where the enquiry form sends people once they've filled it in. Must match the
-   lead form's thank-you button and follow-up URL. */
-const DEST_URL = "https://pickleballpalace.com.au/seasonal-tournaments/";
-const DEST_LABEL = "pickleballpalace.com.au/seasonal-tournaments";
+
+/* What happens after someone submits the form, per campaign. Must match each
+   lead form's thank-you screen. Campaigns not listed get the generic steps. */
+const FLOWS = {
+  "120252796156440334": {
+    form: `It opens straight inside Facebook or Instagram, so nobody has to leave the app.
+           <strong>First and last name, email and phone are all compulsory</strong>, plus what
+           they're planning, roughly how many people and when.`,
+    nextTitle: "They're told you'll call them",
+    next: `The confirmation screen says your team will call within 1 business day to lock in
+           the date, with a <strong>CALL US NOW</strong> button straight to 0424 681 121 for
+           anyone who wants it sorted sooner.`
+  },
+  "120251643887550334": {
+    form: `It opens straight inside Facebook or Instagram. Name, email and phone are
+           compulsory, plus their standard and which days suit them.`,
+    nextTitle: "They're sent to your tournament page",
+    next: `The confirmation screen tells them they're on the list but <em>not registered yet</em>,
+           with a REGISTER NOW button through to
+           <a href="https://pickleballpalace.com.au/seasonal-tournaments/" target="_blank" rel="noopener">pickleballpalace.com.au/seasonal-tournaments</a>.`
+  }
+};
+
+/* Ad types, in a fixed order so each keeps its colour. */
+const THEMES = [
+  {name:"Christmas Party", color:"var(--critical)"},
+  {name:"Team Building",   color:"var(--series-1)"},
+  {name:"Corporate Event", color:"var(--brand-2)"}
+];
+const themeColor = n => (THEMES.find(t => t.name === n) || {color:"var(--muted)"}).color;
 
 // The access key travels in this page's own URL, never in the source, so the
 // markup can live in a public repo without exposing the client's figures.
@@ -331,13 +445,16 @@ function loadLeadCount(){
   fetch(LEADS_API + "?k=" + encodeURIComponent(LEADS_KEY), {cache:"no-store"})
     .then(r => r.ok ? r.json() : null)
     .then(d => {
-      if(!d || !d.totals || !d.totals.current) return;
-      const c = d.totals.current;
-      document.getElementById("ctasub").textContent = c.uncontacted > 0
-        ? `${int(c.uncontacted)} of ${int(c.total)} still to call — tap to call or text`
-        : (c.total > 0
-            ? `All ${int(c.total)} leads contacted — tap to review or text them`
-            : "Tap to call or text every enquiry");
+      if(!d || !Array.isArray(d.groups)) return;
+      const parts = d.groups
+        .filter(g => g.totals && g.totals.uncontacted > 0 && g.key !== "earlier")
+        .map(g => `${int(g.totals.uncontacted)} ${g.label}`);
+      const cur = d.groups.find(g => g.key === d.current_group);
+      document.getElementById("ctasub").textContent = parts.length
+        ? `Still to call: ${parts.join(" · ")}`
+        : (cur && cur.totals.total > 0
+            ? `All ${int(cur.totals.total)} ${cur.label} leads contacted, tap to review`
+            : "New enquiries land here within 30 minutes, with tap-to-call and tap-to-text");
     })
     .catch(()=>{ /* keep the default subtitle */ });
 }
@@ -347,12 +464,23 @@ const money = (n, dp) => "$" + (Number(n)||0).toLocaleString("en-AU",
 const int = n => (Number(n)||0).toLocaleString("en-AU");
 const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const dayLabel = iso => iso ? new Date(String(iso).slice(0,10)+"T00:00:00")
+  .toLocaleDateString("en-AU",{day:"numeric",month:"short"}) : "";
+function ago(iso){
+  const m = (Date.now() - new Date(iso).getTime())/60000;
+  if (m < 60) return Math.max(1, Math.round(m)) + " min ago";
+  if (m < 1440) return Math.round(m/60) + " hr ago";
+  if (m < 2880) return "Yesterday";
+  if (m < 20160) return Math.floor(m/1440) + " days ago";
+  return dayLabel(iso);
+}
 
 const STATUS = {
   ACTIVE:        {label:"Running",         color:"var(--good)",     icon:"check"},
   PENDING_REVIEW:{label:"In review",       color:"var(--warning)",  icon:"clock"},
   IN_PROCESS:    {label:"In review",       color:"var(--warning)",  icon:"clock"},
   PAUSED:        {label:"Paused",          color:"var(--muted)",    icon:"pause"},
+  FINISHED:      {label:"Finished",        color:"var(--muted)",    icon:"check"},
   DISAPPROVED:   {label:"Not approved",    color:"var(--critical)", icon:"alert"},
   WITH_ISSUES:   {label:"Needs attention", color:"var(--critical)", icon:"alert"},
   CAMPAIGN_PAUSED:{label:"Paused",         color:"var(--muted)",    icon:"pause"},
@@ -371,6 +499,7 @@ function statusPill(raw){
   return `<span class="status" style="color:${s.color}">
     <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">${ICONS[s.icon]}</svg>${esc(s.label)}</span>`;
 }
+const themeTag = n => `<span class="tag"><i style="background:${themeColor(n)}"></i>${esc(n)}</span>`;
 
 function kpiTile(label, value, foot, accent){
   return `<div class="card kpi">
@@ -471,18 +600,20 @@ function lineChart(el, rows, key, opts){
 }
 
 /* Plain-English headline: answers "is this working?" without marketing jargon. */
-function headline(t, liveAds){
-  if(liveAds === 0)
-    return "Your ads are paused at the moment, so nothing is being spent.";
+function headline(t, live, review, total){
+  if(total === 0) return "No ads are running at the moment, so nothing is being spent.";
+  if(live === 0 && review > 0)
+    return `Your ${review} new ad${review>1?"s are":" is"} with Facebook for a quick check (usually a few hours). They start showing as soon as they're approved.`;
+  if(live === 0) return "Your ads are paused at the moment, so nothing is being spent.";
   if(t.impressions === 0)
     return "Your ads are approved and about to start showing. First results usually appear within a few hours.";
   if(t.leads === 0)
-    return `Your ads are live and have been seen <span class="hl">${int(t.impressions)} times</span>. No leads have come through yet, which is normal in the first day or two.`;
+    return `Your ads have been seen <span class="hl">${int(t.impressions)} times</span>. No leads yet, which is normal in the first day or two.`;
   const each = t.cost_per_lead ? ` at <span class="hl">${money(t.cost_per_lead)}</span> each` : "";
   return `You've had <span class="hl">${int(t.leads)} ${t.leads===1?"lead":"leads"}</span>${each} from ${int(t.impressions)} times your ads have been seen.`;
 }
 
-let lastStamp = null;
+let lastStamp = null, DATA = null, themeFilter = "All";
 
 function paintStamp(){
   if(!lastStamp) return;
@@ -494,126 +625,224 @@ function paintStamp(){
   document.getElementById("updated").textContent = "Updated " + rel;
 }
 
+function adCard(a, imgs, bestId){
+  const src = a.image_hash && imgs[a.image_hash] ? imgs[a.image_hash] : null;
+  const s = a.stats || {};
+  const body = String(a.body||"").replace(/\n\s*\n/g,"\n").trim();
+  return `<div class="card gad">
+    ${src ? `<img class="gimg ${a.is_current?"":"sq"}" src="${src}" alt="${esc(a.theme)} ad" loading="lazy">`
+          : `<div class="gph">No preview</div>`}
+    <div class="gbody">
+      <div class="badges">${themeTag(a.theme)}${statusPill(a.status)}</div>
+      ${a.id===bestId ? `<div style="margin-top:8px"><span class="badge best">★ Best performer</span></div>` : ""}
+      <div class="ghead">${esc(a.headline || "")}</div>
+      ${body ? `<details class="adtext"><summary>Show the ad text</summary><p>${esc(body)}</p></details>` : ""}
+    </div>
+    <div class="gstats">
+      <div class="adstat"><div class="n">${int(s.leads)}</div><div class="l">Leads</div></div>
+      <div class="adstat"><div class="n">${int(s.impressions)}</div><div class="l">Times seen</div></div>
+      <div class="adstat"><div class="n">${int(s.clicks)}</div><div class="l">Clicks</div></div>
+      <div class="adstat"><div class="n">${money(s.spend,0)}</div><div class="l">Spent</div></div>
+    </div>
+  </div>`;
+}
+
+function renderAds(){
+  const d = DATA, imgs = d.images || {};
+  // Christmas first, then team building, then corporate; P1..P5 within each.
+  const rank = a => { const i = THEMES.findIndex(t => t.name === a.theme); return i < 0 ? 99 : i; };
+  const cur = (d.ads||[]).filter(a => a.is_current)
+    .sort((x,y) => rank(x) - rank(y) || String(x.name).localeCompare(String(y.name)));
+  const themes = THEMES.map(t => t.name).filter(n => cur.some(a => a.theme === n));
+  const others = [...new Set(cur.map(a => a.theme))].filter(n => !themes.includes(n));
+  const all = [...themes, ...others];
+  if (!all.includes(themeFilter)) themeFilter = "All";
+
+  const fl = document.getElementById("filters");
+  fl.innerHTML = all.length > 1 ? ["All", ...all].map(n => {
+    const count = n === "All" ? cur.length : cur.filter(a => a.theme === n).length;
+    return `<button class="fbtn" data-t="${esc(n)}" aria-pressed="${n===themeFilter}">
+      ${n==="All" ? "" : `<i style="background:${themeColor(n)}"></i>`}${esc(n)} · ${count}</button>`;
+  }).join("") : "";
+  fl.querySelectorAll(".fbtn").forEach(b => b.addEventListener("click", () => {
+    themeFilter = b.dataset.t; renderAds();
+  }));
+
+  const best = cur.filter(a => a.status === "ACTIVE")
+    .sort((x,y)=>(y.stats?.leads||0)-(x.stats?.leads||0) || (y.stats?.clicks||0)-(x.stats?.clicks||0))[0];
+  const bestId = cur.length>1 && best && ((best.stats?.leads||0)>0 || (best.stats?.clicks||0)>0) ? best.id : null;
+
+  const shown = cur.filter(a => themeFilter === "All" || a.theme === themeFilter);
+  document.getElementById("ads").innerHTML = shown.map(a => adCard(a, imgs, bestId)).join("") ||
+    `<div class="card pad" style="color:var(--muted)">No ads running yet.</div>`;
+}
+
+function renderFeed(d){
+  const rows = d.recent_leads || [];
+  const el = document.getElementById("feed");
+  if(!rows.length){
+    el.innerHTML = `<div class="empty" style="margin:16px"><strong>No enquiries yet</strong>
+      <span>They'll appear here as they come in.</span></div>`;
+    return;
+  }
+  el.innerHTML = `<div class="feed">${rows.slice(0,8).map(r => `
+      <div class="frow">
+        <div class="fwhen">${esc(ago(r.at))}</div>
+        <div class="fmain">
+          <span class="tag"><i style="background:${r.campaign_id===d.current_campaign?.id?"var(--brand-2)":"var(--baseline)"}"></i>${esc(r.campaign||"")}</span>
+          <span class="fans">${esc((r.answers||[]).join(" · ") || "Enquiry")}</span>
+        </div>
+        <div class="fstate">${r.called ? statusPill("CALLED_OK") : statusPill("NOT_CALLED")}</div>
+      </div>`).join("")}</div>
+    <div class="feedfoot">Showing the latest ${Math.min(8, rows.length)}.
+      <a href="${LEADS_URL}">Open the call list</a> for every lead, old and new, with their details.</div>`;
+}
+STATUS.CALLED_OK  = {label:"Called",          color:"var(--good)",    icon:"check"};
+STATUS.NOT_CALLED = {label:"Not called yet",  color:"var(--warning)", icon:"clock"};
+
+function renderPast(d){
+  const past = (d.past_campaigns||[]).filter(c => (c.stats?.impressions||0) > 0 || c.ads > 0);
+  document.getElementById("pastsection").hidden = !past.length;
+  const imgs = d.images || {};
+  document.getElementById("past").innerHTML = past.map(c => {
+    const s = c.stats || {}, cl = c.leads_in_call_list || {total:0, contacted:0};
+    const pct = cl.total ? Math.round(cl.contacted / cl.total * 100) : 0;
+    const status = c.status === "PAUSED" || c.status === "CAMPAIGN_PAUSED" ? "FINISHED" : c.status;
+    const ads = (d.ads||[]).filter(a => a.campaign_id === c.id);
+    return `<div class="card past">
+      <div class="pasthead">
+        <div>
+          <div class="pastname">${esc(c.label)}</div>
+          <div class="campdates">${c.first_day ? `${dayLabel(c.first_day)} to ${dayLabel(c.last_day)}` : ""}</div>
+        </div>
+        ${statusPill(status)}
+      </div>
+      <div class="pastgrid">
+        <div class="pstat"><div class="n">${int(s.leads)}</div><div class="l">Leads</div></div>
+        <div class="pstat"><div class="n">${s.cost_per_lead ? money(s.cost_per_lead) : "—"}</div><div class="l">Cost per lead</div></div>
+        <div class="pstat"><div class="n">${money(s.spend,0)}</div><div class="l">Spent</div></div>
+        <div class="pstat"><div class="n">${int(s.reach)}</div><div class="l">People reached</div></div>
+      </div>
+      ${cl.total ? `<div class="progress" role="img" aria-label="${pct}% of leads called"><span style="width:${pct}%"></span></div>
+        <div class="progress-l"><strong>${int(cl.contacted)} of ${int(cl.total)}</strong> leads marked as called
+          ${cl.total - cl.contacted > 0 ? ` · <a href="${LEADS_URL}" style="color:var(--series-1)">${int(cl.total - cl.contacted)} still worth a call</a>` : ""}</div>` : ""}
+      ${ads.length ? `<details class="pastads"><summary>See this campaign's ads (${ads.length})</summary>
+        <div class="minis">${ads.map(a => {
+          const src = a.image_hash && imgs[a.image_hash] ? imgs[a.image_hash] : null;
+          return `<div class="mini">${src ? `<img src="${src}" alt="" loading="lazy">` : `<div class="ph"></div>`}
+            <div><div class="t">${esc(a.format)} ad</div>
+            <div class="s">${int(a.stats?.leads)} leads · ${money(a.stats?.spend,0)}</div></div></div>`;
+        }).join("")}</div></details>` : ""}
+    </div>`;
+  }).join("");
+}
+
 function render(d){
-  const t=d.totals||{}, b=d.budget||{}, acct=d.account||{}, tg=d.targeting||{};
-  const ads=(d.ads||[]);
-  const liveAds=ads.filter(a=>a.status==="ACTIVE").length;
+  DATA = d;
+  const t=d.totals||{}, b=d.budget||{}, tg=d.targeting||{};
+  const cc = d.current_campaign || {};
+  const cur = (d.ads||[]).filter(a => a.is_current);
+  const live = cur.filter(a => a.status === "ACTIVE").length;
+  const review = cur.filter(a => a.status === "IN_PROCESS" || a.status === "PENDING_REVIEW").length;
 
   lastStamp = d.updated_at || d.generated_at;
   paintStamp();
 
   document.getElementById("livetxt").textContent =
-    liveAds>0 ? `${liveAds} ad${liveAds>1?"s":""} running` : "Paused";
+    live > 0 ? `${live} ad${live>1?"s":""} running`
+    : review > 0 ? `${review} ad${review>1?"s":""} in review` : "Paused";
   document.getElementById("agency").textContent = AGENCY;
 
-  /* headline + countdown */
-  const days = Math.ceil((new Date(EVENT_DATE+"T00:00:00") - new Date())/86400000);
+  /* headline: which campaign is running, since when, and is it working */
+  const start = cc.first_day || cc.created_time;
+  const end = cc.scheduled_end;
+  const daysLeft = end ? Math.ceil((new Date(end) - new Date())/86400000) : null;
   document.getElementById("statuscard").innerHTML = `
-    <div class="status-msg">${headline(t, liveAds)}</div>
-    ${days>0?`<div class="countdown"><div class="n">${days}</div>
-      <div class="l">days to<br>${esc(EVENT_NAME)}</div></div>`:""}`;
+    <div class="status-main">
+      <div class="eyebrow">${cc.status==="ACTIVE" ? `<span class="dot"></span>Running now` : "Latest campaign"}</div>
+      <div class="camptitle">${esc(cc.label || "Your campaign")}</div>
+      <div class="campdates">${start ? `Started ${dayLabel(start)}` : ""}${end ? ` · runs to ${dayLabel(end)}` : ""}</div>
+      <div class="status-msg">${headline(t, live, review, cur.length)}</div>
+    </div>
+    ${daysLeft && daysLeft > 0 ? `<div class="countdown"><div class="n">${daysLeft}</div>
+      <div class="l">days left in<br>this campaign</div></div>` : ""}`;
 
-  /* KPIs */
+  /* KPIs for the current campaign */
   const cpl=t.cost_per_lead;
   document.getElementById("kpis").innerHTML =
     kpiTile("Leads", int(t.leads),
       t.leads>0 ? "Every one has name, email and phone" : "None yet", "var(--brand-2)") +
     kpiTile("Cost per lead", cpl?money(cpl):"—",
       cpl?"What each lead costs you":"Shows once leads arrive", "var(--series-1)") +
-    kpiTile("Spent so far", money(t.spend), "Since the ads went live", "var(--series-2)") +
+    kpiTile("Spent so far", money(t.spend), "On this campaign", "var(--series-2)") +
     kpiTile("Daily budget", money(b.daily_total,0),
       `About ${money(b.monthly_pace,0)} a month`, "var(--accent-budget)");
 
-  /* creative — promoted to the top so the client sees what's running */
-  const imgs=d.images||{};
-  const bestId = ads.filter(a=>a.status==="ACTIVE")
-    .sort((x,y)=>(y.stats?.leads||0)-(x.stats?.leads||0)
-                || (y.stats?.clicks||0)-(x.stats?.clicks||0))[0];
-  const showBest = ads.length>1 && bestId &&
-    ((bestId.stats?.leads||0)>0 || (bestId.stats?.clicks||0)>0);
-
-  document.getElementById("ads").innerHTML = ads.map(a=>{
-    const src=a.image_hash&&imgs[a.image_hash]?imgs[a.image_hash]:null;
-    const s=a.stats||{};
-    return `<div class="card ad">
-      <div class="adtop">
-        ${src?`<img class="thumb" src="${src}" alt="Ad creative" loading="lazy">`
-             :`<div class="thumb-ph">No preview</div>`}
-        <div style="min-width:0">
-          <div class="badges">
-            ${statusPill(a.status)}
-            <span class="badge">${esc(a.format)}</span>
-            ${showBest && a.id===bestId.id?`<span class="badge best">★ Best performer</span>`:""}
-          </div>
-          <div class="adhead">${esc(a.headline||"")}</div>
-          <div class="adbody">${esc(String(a.body||"").replace(/\n\s*\n/g,"\n").trim())}</div>
-        </div>
-      </div>
-      <div class="adstats">
-        <div class="adstat"><div class="n">${int(s.leads)}</div><div class="l">Leads</div></div>
-        <div class="adstat"><div class="n">${int(s.impressions)}</div><div class="l">Times seen</div></div>
-        <div class="adstat"><div class="n">${int(s.clicks)}</div><div class="l">Clicks</div></div>
-        <div class="adstat"><div class="n">${money(s.spend)}</div><div class="l">Spent</div></div>
-      </div>
-    </div>`;}).join("") ||
-    `<div class="card pad" style="color:var(--muted)">No ads running yet.</div>`;
+  document.getElementById("adsub").textContent = cur.length
+    ? `${cur.length} ad${cur.length>1?"s":""} in the ${cc.label} campaign, exactly as people see them on Facebook and Instagram.`
+    : "Exactly what people are seeing on Facebook and Instagram.";
+  renderAds();
+  renderFeed(d);
 
   /* what actually happens after someone taps the ad */
+  const flow = FLOWS[cc.id] || {
+    form: "It opens straight inside Facebook or Instagram, so nobody has to leave the app. Name, email and phone are compulsory.",
+    nextTitle: "They see a thank-you screen", next: "It confirms their enquiry has been received."};
   document.getElementById("flowcard").innerHTML = `
     <div class="step">
       <div class="stepn">1</div>
       <h3>They fill in a short form</h3>
-      <p>It opens straight inside Facebook or Instagram, so nobody has to leave the app.
-         <strong>First and last name, email and phone are all compulsory</strong> — Facebook won't
-         let them submit without every one — plus their standard and which days suit them.</p>
+      <p>${flow.form}</p>
     </div>
     <div class="step">
       <div class="stepn">2</div>
-      <h3>They're sent to your tournament page</h3>
-      <p>The confirmation screen tells them they're on the list but <em>not registered yet</em>,
-         with a REGISTER NOW button through to
-         <a href="${DEST_URL}" target="_blank" rel="noopener">${esc(DEST_LABEL)}</a>.</p>
+      <h3>${esc(flow.nextTitle)}</h3>
+      <p>${flow.next}</p>
     </div>
     <div class="step">
       <div class="stepn">3</div>
       <h3>Your team calls them</h3>
       <p>Every lead lands in your <a href="${LEADS_URL}"><strong>call list</strong></a>
-         within minutes, with their number ready to tap and a tick to mark them off —
+         within 30 minutes, with their number ready to tap and a tick to mark them off,
          so nobody gets missed and you can see who has already been rung.</p>
     </div>`;
 
-  /* charts — two separate single-series plots, never a dual axis */
+  /* charts: two separate single-series plots for the current campaign */
   const daily=d.daily||[];
+  document.getElementById("chartsub").textContent = `Each day of the ${cc.label || "current"} campaign.`;
   lineChart(document.getElementById("leadschart"), daily, "leads", {
     title:"Leads per day", color:"var(--series-1)",
     fmtTick:v=>Math.round(v), fmtTip:v=>`${int(Math.round(v))} lead${Math.round(v)===1?"":"s"}`,
     fmtTotal:v=>`${int(v)} total`, padLeft:32, minMax:4,
     emptyTitle:"Nothing to chart yet",
-    emptyBody:"Daily results appear here from tomorrow."});
+    emptyBody:"Daily results appear here once the ads have run for a day."});
   lineChart(document.getElementById("spendchart"), daily, "spend", {
     title:"Spend per day", color:"var(--series-2)",
     fmtTick:v=>"$"+Math.round(v), fmtTip:v=>money(v), fmtTotal:v=>`${money(v)} total`, minMax:5,
     emptyTitle:"Nothing to chart yet",
-    emptyBody:"Daily spend appears here from tomorrow."});
+    emptyBody:"Daily spend appears here once the ads have run for a day."});
+
+  renderPast(d);
 
   /* supporting detail */
-  const c=(d.campaigns||[])[0]||{};
-  const lf=d.lead_form||{};
+  const lf=d.lead_form||{}, at=d.account_totals||{};
   document.getElementById("campaigncard").innerHTML = `
-    <div style="font-weight:660;font-size:1rem;letter-spacing:-.01em">Your campaign</div>
-    <div style="margin-top:3px;margin-bottom:10px">${statusPill(c.status)}</div>
-    <div class="row"><span class="k">Goal</span><span class="v">Get leads</span></div>
+    <div style="font-weight:660;font-size:1rem;letter-spacing:-.01em">${esc(cc.label || "Your campaign")}</div>
+    <div style="margin-top:3px;margin-bottom:10px">${statusPill(cc.status)}</div>
+    <div class="row"><span class="k">Goal</span><span class="v">Get enquiries</span></div>
     <div class="row"><span class="k">Daily budget</span><span class="v">${money(b.daily_total,0)}</span></div>
-    <div class="row"><span class="k">Ads running</span><span class="v">${liveAds} of ${ads.length}</span></div>
-    <div class="row"><span class="k">Lead form</span><span class="v">${lf.status==="ACTIVE"?"Working":esc(lf.status||"—")}</span></div>`;
+    <div class="row"><span class="k">Ads running</span><span class="v">${live} of ${cur.length}${review?` (${review} in review)`:""}</span></div>
+    <div class="row"><span class="k">Enquiry form</span><span class="v">${lf.status==="ACTIVE"?"Working":esc(lf.status||"—")}</span></div>
+    ${end ? `<div class="row"><span class="k">Scheduled to finish</span><span class="v">${dayLabel(end)}</span></div>` : ""}
+    <div class="row"><span class="k">All campaigns to date</span><span class="v">${int(at.leads)} leads · ${money(at.spend,0)}</span></div>`;
 
   document.getElementById("targetcard").innerHTML = `
     <div style="font-weight:660;font-size:1rem;letter-spacing:-.01em">Who's seeing them</div>
     <div style="margin-top:3px;margin-bottom:14px;color:var(--text-secondary);font-size:.875rem">
-      Facebook shows the ads to the locals most likely to enter.</div>
+      Facebook shows the ads to the locals most likely to enquire.</div>
     <div class="chips">
       ${tg.area?`<span class="chip">📍 ${esc(tg.area)}</span>`:""}
-      ${tg.radius_km?`<span class="chip">Within ${esc(tg.radius_km)} km</span>`:""}
+      ${tg.radius_km?`<span class="chip">Within ${esc(tg.radius_km)} km of Buderim</span>`:""}
       ${tg.age?`<span class="chip">Ages ${esc(tg.age)}</span>`:""}
       <span class="chip">Facebook + Instagram</span>
     </div>
